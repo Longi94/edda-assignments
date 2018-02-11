@@ -14,19 +14,204 @@ highlight: tango
 ### Exercise 2
 
 **1.**
+```{r}
+m = 30
+n = 30
+mu = 180
+nu = 180
+sd = 10
+```
+
+```{r,echo=FALSE}
+B=1000
+p = numeric(B)
+for (b in 1:B) {
+  x = rnorm(m,mu,sd)
+  y = rnorm(n,nu,sd)
+  p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+}
+
+#power for nu=180, less than 5%
+power_nu180_05_v1 = mean(p < 0.05)
+
+#power for nu=180, less than 5% 
+power_nu180_10_v1 = mean(p < 0.1)
+```
+
+*p*-values smaller than 5%
+```{r,echo=FALSE}
+power_nu180_05_v1
+```
+*p*-values smaller than 10%
+```{r,echo=FALSE}
+power_nu180_10_v1
+```
+
+```{r,echo=FALSE}
+hist(p,main = "distribution of p-values")
+```
 
 **2.**
+```{r}
+m = 30
+n = 30
+mu = 180
+nu = 180
+sd = 1
+```
 
+```{r,echo=FALSE}
+B=1000
+p = numeric(B)
+for (b in 1:B) {
+  x = rnorm(m,mu,sd)
+  y = rnorm(n,nu,sd)
+  p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+}
+
+#power for nu=180, less than 5%
+power_nu180_05_v2 = mean(p < 0.05)
+
+#power for nu=180, less than 5% 
+power_nu180_10_v2 = mean(p < 0.1)
+```
+
+*p*-values smaller than 5%
+```{r,echo=FALSE}
+power_nu180_05_v2
+```
+*p*-values smaller than 10%
+```{r,echo=FALSE}
+power_nu180_10_v2
+```
+
+```{r,echo=FALSE}
+hist(p,main = "distribution of p-values")
+```
 **3.**
+```{r}
+m = 30
+n = 30
+mu = 180
+nu = 175
+sd = 6
+```
+
+```{r,echo=FALSE}
+B=1000
+p = numeric(B)
+for (b in 1:B) {
+  x = rnorm(m,mu,sd)
+  y = rnorm(n,nu,sd)
+  p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+}
+
+#power for nu=180, less than 5%
+power_nu180_05_v3 = mean(p < 0.05)
+
+#power for nu=180, less than 5% 
+power_nu180_10_v3 = mean(p < 0.1)
+```
+
+*p*-values smaller than 5%
+```{r,echo=FALSE}
+power_nu180_05_v3
+```
+*p*-values smaller than 10%
+```{r,echo=FALSE}
+power_nu180_10_v3
+```
+
+```{r,echo=FALSE}
+hist(p,main = "distribution of p-values")
+```
 
 **4.**
 
 ### Exercise 3
 
 **1.**
+```{r}
+m = 30
+n = 30
+mu = 180
+nu = seq(175,185,by=0.1)
+sd = 5
+```
+
+```{r,echo=FALSE}
+B = 1000
+step = 1
+result = numeric(length(nu))
+for (nu_i in nu) {
+  p = numeric(B)
+  for (b in 1:B) {
+    x = rnorm(m,mu,sd)
+    y = rnorm(n,nu_i,sd)
+    p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+  }
+  result[step] = mean(p)
+  
+  step = step+1
+}
+
+plot(nu,result,xlab = "nu",ylab = "power")
+```
 
 **2.**
+```{r}
+m = 100
+n = 100
+mu = 180
+nu = seq(175,185,by=0.1)
+sd = 5
+```
+
+```{r,echo=FALSE}
+B = 1000
+step = 1
+result = numeric(length(nu))
+for (nu_i in nu) {
+  p = numeric(B)
+  for (b in 1:B) {
+    x = rnorm(m,mu,sd)
+    y = rnorm(n,nu_i,sd)
+    p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+  }
+  result[step] = mean(p)
+  
+  step = step+1
+}
+
+plot(nu,result,xlab = "nu",ylab = "power")
+```
 
 **3.**
+```{r}
+m = 30
+n = 30
+mu = 180
+nu = seq(175,185,by=0.1)
+sd = 100
+```
+
+```{r,echo=FALSE}
+B = 1000
+step = 1
+result = numeric(length(nu))
+for (nu_i in nu) {
+  p = numeric(B)
+  for (b in 1:B) {
+    x = rnorm(m,mu,sd)
+    y = rnorm(n,nu_i,sd)
+    p[b] = t.test(x,y,var.equal=TRUE)[[3]]
+  }
+  result[step] = mean(p)
+  
+  step = step+1
+}
+
+plot(nu,result,xlab = "nu",ylab = "power")
+```
 
 **4.**

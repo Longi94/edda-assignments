@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1"
-author: "Daniel Galea, Konrad Karaś and Long Tran, group 6"
+author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
 date: "10 February 2018"
 output: pdf_document
 fontsize: 11pt

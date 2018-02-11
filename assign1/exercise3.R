@@ -86,3 +86,4 @@ plot(nu,result) # result looks like uniform distribution
 # KOKAR my comment: now we have very large sd (standard deviation) and very low amount of samples (m=n=30)
 # in such a situation t-test has very low confidence (each performed t-test is based on very wide normal distribution)
 
+# for exercise 3 I made my own test: I set n=m=10000 => result looks like normal distributon => we still have big sd but more sampples so t-test is more confident

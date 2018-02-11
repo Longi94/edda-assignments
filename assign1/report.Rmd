@@ -8,6 +8,9 @@ highlight: tango
 ---
 
 ## Exercises
+
+### Exercise 1
+
 ```{r,echo=FALSE}
 load(file="assign1.RData")
 ```
@@ -46,9 +49,6 @@ qqnorm(x4); qqline(x4)
 hist(x5)
 qqnorm(x5); qqline(x5)
 ```
-
-
-### Exercise 1
 
 ### Exercise 2
 

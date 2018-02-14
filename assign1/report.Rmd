@@ -1,7 +1,7 @@
 ---
 title: "Assignment 1"
 author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
-date: "10 February 2018"
+date: "14 February 2018"
 output: pdf_document
 fontsize: 11pt
 highlight: tango
@@ -15,40 +15,85 @@ highlight: tango
 load(file="assign1.RData")
 ```
 
-**x1**
+**x1 plots**
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.height=6}
+par(mfrow = c(2,2))
 hist(x1, freq = FALSE); lines(density(x1), lwd = 2)
 qqnorm(x1); qqline(x1)
+
+x1_testNorm = rnorm(length(x1))
+hist(x1_testNorm, freq = FALSE, main = "Histogram of simulated normal"); lines(density(x1_testNorm), lwd = 2)
+qqnorm(x1_testNorm); qqline(x1_testNorm)
 ```
 
-**x2**
+x1 is sampled from normal distribution. The quantiles form roughly a straight line. Since x1 has a low amount of samples inaccuracies are acceptable. The histogram and QQ-plot of the simulated normal distribution resembles the plots of x1.
 
-```{r,echo=FALSE}
+\pagebreak
+
+**x2 plots**
+
+```{r,echo=FALSE,fig.height=6}
+par(mfrow = c(2,2))
 hist(x2, freq = FALSE); lines(density(x2), lwd = 2)
 qqnorm(x2); qqline(x2)
+
+x2_testNorm = rnorm(length(x2))
+hist(x2_testNorm, freq = FALSE, main = "Histogram of simulated normal"); lines(density(x2_testNorm), lwd = 2)
+qqnorm(x2_testNorm); qqline(x2_testNorm)
 ```
 
-**x3**
+This is not a normal distribution as the histogram shows more of a uniform distribution. The quantiles do not form a straight line. The plots do not resemble that of the simulated normal distribution's.
 
-```{r,echo=FALSE}
+\pagebreak
+
+**x3 plots**
+
+```{r,echo=FALSE,fig.height=6}
+par(mfrow = c(2,2))
 hist(x3, freq = FALSE); lines(density(x3), lwd = 2)
 qqnorm(x3); qqline(x3)
+
+x3_testNorm = rnorm(length(x3))
+hist(x3_testNorm, freq = FALSE, main = "Histogram of simulated normal"); lines(density(x3_testNorm), lwd = 2)
+qqnorm(x3_testNorm); qqline(x3_testNorm)
 ```
 
-**x4**
+This if from a normal distribution as the quantiles form a very straight line and looks similar to the simulated distribution.
 
-```{r,echo=FALSE}
+\pagebreak
+
+**x4 plots**
+
+```{r,echo=FALSE,fig.height=6}
+par(mfrow = c(2,2))
 hist(x4, freq = FALSE); lines(density(x4), lwd = 2)
 qqnorm(x4); qqline(x4)
+
+x4_testNorm = rnorm(length(x4))
+hist(x4_testNorm, freq = FALSE, main = "Histogram of simulated normal"); lines(density(x4_testNorm), lwd = 2)
+qqnorm(x4_testNorm); qqline(x4_testNorm)
 ```
 
-**x5**
+The histogram has the bell-shape but it is slightly offset. The QQ-plot closely resembles a line and looks similar to the simulated one. x4 is from a normal distribution.
 
-```{r,echo=FALSE}
+\pagebreak
+
+**x5 plots**
+
+```{r,echo=FALSE,fig.height=6}
+par(mfrow = c(2,2))
 hist(x5, freq = FALSE); lines(density(x5), lwd = 2)
 qqnorm(x5); qqline(x5)
+
+x5_testNorm = rnorm(length(x5))
+hist(x5_testNorm, freq = FALSE, main = "Histogram of simulated normal"); lines(density(x5_testNorm), lwd = 2)
+qqnorm(x5_testNorm); qqline(x5_testNorm)
 ```
+
+This is not from a normal distribution. THe quantiles do not form a straight line and the histogram does not have the bell-shape of a normal distribution.
+
+\pagebreak
 
 ### Exercise 2
 
@@ -73,7 +118,7 @@ for (b in 1:B) {
 #power for nu=180, less than 5%
 power_nu180_05_v1 = mean(p < 0.05)
 
-#power for nu=180, less than 5% 
+#power for nu=180, less than 5%
 power_nu180_10_v1 = mean(p < 0.1)
 ```
 
@@ -87,8 +132,10 @@ power_nu180_10_v1
 ```
 
 ```{r,echo=FALSE}
-hist(p,main = "distribution of p-values")
+hist(p,main = "distribution of p-values", freq = FALSE); lines(density(p), lwd = 2)
 ```
+
+This is a uniform distribution.
 
 **2.**
 ```{r}
@@ -111,7 +158,7 @@ for (b in 1:B) {
 #power for nu=180, less than 5%
 power_nu180_05_v2 = mean(p < 0.05)
 
-#power for nu=180, less than 5% 
+#power for nu=180, less than 5%
 power_nu180_10_v2 = mean(p < 0.1)
 ```
 
@@ -125,9 +172,13 @@ power_nu180_10_v2
 ```
 
 ```{r,echo=FALSE}
-hist(p,main = "distribution of p-values")
+hist(p,main = "distribution of p-values", freq = FALSE); lines(density(p), lwd = 2)
 ```
+
+This is a uniform distribution.
+
 **3.**
+
 ```{r}
 m = 30
 n = 30
@@ -148,7 +199,7 @@ for (b in 1:B) {
 #power for nu=180, less than 5%
 power_nu180_05_v3 = mean(p < 0.05)
 
-#power for nu=180, less than 5% 
+#power for nu=180, less than 5%
 power_nu180_10_v3 = mean(p < 0.1)
 ```
 
@@ -162,10 +213,14 @@ power_nu180_10_v3
 ```
 
 ```{r,echo=FALSE}
-hist(p,main = "distribution of p-values")
+hist(p,main = "distribution of p-values", freq = FALSE); lines(density(p), lwd = 2)
 ```
 
+This is an exponential distribution.
+
 **4.**
+
+In the first and second case the number of high *p*-values is very high, so we cannot reject the null hypothesis. For the last case, a high percentage of the *p*-values were very low, which means that we reject the null hypothesis.
 
 ### Exercise 3
 
@@ -190,7 +245,7 @@ for (nu_i in nu) {
     p[b] = t.test(x,y,var.equal=TRUE)[[3]]
   }
   result[step] = mean(p)
-  
+
   step = step+1
 }
 
@@ -218,7 +273,7 @@ for (nu_i in nu) {
     p[b] = t.test(x,y,var.equal=TRUE)[[3]]
   }
   result[step] = mean(p)
-  
+
   step = step+1
 }
 
@@ -246,7 +301,7 @@ for (nu_i in nu) {
     p[b] = t.test(x,y,var.equal=TRUE)[[3]]
   }
   result[step] = mean(p)
-  
+
   step = step+1
 }
 
@@ -254,3 +309,5 @@ plot(nu,result,xlab = "nu",ylab = "power")
 ```
 
 **4.**
+
+The first two plots look like normal distribution as the standard deviation is a low, so the t-test has high confidence. In the second case we have a lot more samples which resulted in a narrower bell-shape and higher confidence. In the third case the standard deviation is so high, that the created graph does not contain any useful information and we cannot recognize any distribution.

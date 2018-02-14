@@ -18,35 +18,35 @@ load(file="assign1.RData")
 **x1**
 
 ```{r,echo=FALSE}
-hist(x1)
+hist(x1, freq = FALSE); lines(density(x1), lwd = 2)
 qqnorm(x1); qqline(x1)
 ```
 
 **x2**
 
 ```{r,echo=FALSE}
-hist(x2)
+hist(x2, freq = FALSE); lines(density(x2), lwd = 2)
 qqnorm(x2); qqline(x2)
 ```
 
 **x3**
 
 ```{r,echo=FALSE}
-hist(x3)
+hist(x3, freq = FALSE); lines(density(x3), lwd = 2)
 qqnorm(x3); qqline(x3)
 ```
 
 **x4**
 
 ```{r,echo=FALSE}
-hist(x4)
+hist(x4, freq = FALSE); lines(density(x4), lwd = 2)
 qqnorm(x4); qqline(x4)
 ```
 
 **x5**
 
 ```{r,echo=FALSE}
-hist(x5)
+hist(x5, freq = FALSE); lines(density(x5), lwd = 2)
 qqnorm(x5); qqline(x5)
 ```
 

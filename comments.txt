@@ -1,0 +1,10 @@
+QQPlot - Should look linear.
+
+Exercise 1
+X1 - Normal distribution: Both X1 and test (from norm dist.) are linear(ish).
+X2 - Not-normal: Histogram is not bell-shaped, tails also do not continue to follow straight line.
+X3 - Normal: Histogram is similar to bell-shape, QQplot almost conforms totally to straight-line, as konrad said it's also similar to test.
+X4 - Unsure (prob normal due to low sample size): Histogram slightly skewed, but also considerin that the sample size is small it is not the best indicator. QQplot follows straight line and outliers are close enough.
+X5 - Not normal: Histogram heavily skewed, QQplot does not conform to straight line.
+
+Exercise 2

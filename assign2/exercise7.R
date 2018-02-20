@@ -40,3 +40,6 @@ kruskal.test(drugs, groups)
 # while the t-test only tests 2, so 2 populations can be the same, but different from the third
 # The two results are compatibel with each other, 3 populations are not the same, 2 of the 3 are the
 # same, but no the third (cyclopropane)
+
+detach(dogs)
+detach(dogframe)

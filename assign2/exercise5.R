@@ -4,7 +4,7 @@ peruvians = peruvians[, -c(5, 6, 7)]
 # 1.
 pairs(peruvians)
 
-# gota think about it first
+# gota think about it first, no idea
 
 # 2.
 attach(peruvians)
@@ -14,6 +14,13 @@ cor.test(length, migration, method = "spearman")
 cor.test(wrist, migration, method = "spearman")
 cor.test(systolic, migration, method = "spearman")
 cor.test(diastolic, migration, method = "spearman")
+
+cor.test(age, migration, method = "spearman")[[4]] # 0.4760575
+cor.test(weight, migration, method = "spearman")[[4]] # 0.3506956
+cor.test(length, migration, method = "spearman")[[4]] # 0.08458432
+cor.test(wrist, migration, method = "spearman")[[4]] # 0.2193498
+cor.test(systolic, migration, method = "spearman")[[4]] # -0.1684286
+cor.test(diastolic, migration, method = "spearman")[[4]] # 0.07514098
 
 # As I understood, the higher the rho, the higher correlation ther is between the things, seems like age-migration has the highest correlation
 
@@ -101,3 +108,5 @@ cor.test(diastolic, migration, method = "spearman")
 # Warning message:
 #   In cor.test.default(diastolic, migration, method = "spearman") :
 #   Cannot compute exact p-value with ties
+
+detach(peruvians)

@@ -1,0 +1,17 @@
+
+Exercise 1
+X1 - Normal distribution: Both X1 and test (from norm dist.) are linear(ish).
+X2 - Not-normal: Histogram is not bell-shaped, tails also do not continue to follow straight line.
+X3 - Normal: Histogram is similar to bell-shape, QQplot almost conforms totally to straight-line, as konrad said it's also similar to test.
+X4 - Unsure (prob normal due to low sample size): Histogram slightly skewed, but also considerin that the sample size is small it is not the best indicator. QQplot follows straight line and outliers are close enough.
+X5 - Not normal: Histogram heavily skewed, QQplot does not conform to straight line.
+
+Exercise 2
+1 - < 0.05 = 0.053, < 0.1 = 0.107, uniform
+2 - < 0.05= 0.054, < 0.1 = 0.108, uniform
+3 - < 0.05 = 0.913 , < 0.1 = 0.953, log normal or exponential
+Explanation of results:
+In 1 and 2, the p values are low meaning that the probability that H0 can be rejected. However in 3 it is high and this means that H0 is not to be rejected.
+In 1 and 2 the distributioni is uniform and this entails a constant probability (of equal heights?), however in 3 the distribution seems to be... meaning that
+
+ 47555fb2-4eab-4be7-95df-c946aeb41910

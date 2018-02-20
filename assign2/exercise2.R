@@ -29,16 +29,19 @@ boxplot(lightnc)
 # 2.
 
 # confidence interval of light1879
+# result: 299836.9 299867.9
 error1 = qnorm(0.975) * sd(light1879) / sqrt(length(light1879))
 T1 = mean(light1879)
 c(T1 - error1, T1 + error1)
 
 # confidence interval of light1882
+# result: 299712.4 299800.0
 error2 = qnorm(0.975) * sd(light1882) / sqrt(length(light1882))
 T2 = mean(light1882)
 c(T2 - error2, T2 + error2)
 
 # confidence interval of lightnc
+# result: 299732.5 299789.3 
 B = 1000
 Tstar = numeric(B)
 for (i in 1:B) {

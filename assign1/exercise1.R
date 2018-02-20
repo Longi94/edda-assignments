@@ -8,7 +8,7 @@ hist(x1,freq = FALSE); lines(density(x1), col = "red", lwd = 2)
 qqnorm(x1); qqline(x1)
 
 x1_testNorm = rnorm(length(x1))
-hist(x1_testNorm)
+hist(x1_testNorm,freq=FALSE); lines(density(x1_testNorm), col="red", lwd=2)
 qqnorm(x1_testNorm); qqline(x1_testNorm)
 # KOKAR my opinion: x1 is sampled from normal distribution - quantiles generally keep in line, we have to remember that we have low amount of samples so such errors are acceptable
 

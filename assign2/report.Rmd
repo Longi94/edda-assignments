@@ -1,0 +1,38 @@
+---
+title: "Assignment 2"
+author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
+date: "28 February 2018"
+output: pdf_document
+fontsize: 11pt
+highlight: tango
+---
+
+## Exercises
+
+### Exercise 1
+
+\pagebreak
+
+### Exercise 2
+
+\pagebreak
+
+### Exercise 3
+
+\pagebreak
+
+### Exercise 4
+
+\pagebreak
+
+### Exercise 5
+
+\pagebreak
+
+### Exercise 6
+
+\pagebreak
+
+### Exercise 7
+
+\pagebreak

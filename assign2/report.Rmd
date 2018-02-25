@@ -19,9 +19,219 @@ highlight: tango
 
 ### Exercise 3
 
+*Point 1*
+
+Null hypothesis: Median duration is smaller or equal to 31 days.
+
+***Choosing appropriate test***
+
+To choose appropriate test for this exercise, we have to analyse given data.
+Data consist one numerical outcome for experimental unit - part delivery duration.
+Histogram and Q-Q Plot were made to check distribution of data.
+
+```{r, echo=FALSE, fig.height=6}
+data = scan("klm.txt")
+par(mfrow=c(1,2))
+hist(data, prob=T)
+qqnorm(data)
+```
+
+Analysis shows, that given data has distribution far away from normal.
+In this case we cannot use t-test as it gives the best results for normal distribution.
+For test purposes we will use sign test as it is recommended for random data distribution.
+
+```{r}
+# m0 = 31 - expected median duration
+m0 = 31
+ns = sum(data <= m0) #number of successes
+nt = length(data) #number of trials
+result = binom.test(ns,nt,p=0.5) # p=0.5 - we consider median duration (N/2)
+result
+p = result[[3]]
+p
+```
+
+Power value is less than 0,05% so we have to reject our null hypothesis.
+
+*Point 2*
+
+Null hypothesis: At most 10% of the parts arrives after maximum period of 72 days.
+
+As we are working with the same set of data, we will use sign test one more time.
+
+```{r}
+ns2 = sum(data > 72); # amount of deliveries that exceeded 72 days
+result = binom.test(ns_2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
+result
+p = result[[3]]
+p
+```
+
+Power value is less than 0,05% so we have to reject our null hypothesis.
+
 \pagebreak
 
 ### Exercise 4
+
+In this exercise we will test if seeding clouds has impact on rainfall.
+
+```{r, echo=FALSE, fig.height=6}
+clouds = read.table("clouds.txt",header=TRUE)
+par(mfrow=c(1,2))
+boxplot(clouds[,1],clouds[,2],names=c("seeded","unseeded"))
+plot(clouds[,1],clouds[,2])
+abline(0,1)
+
+seeded = clouds[,1]
+unseeded = clouds[,2]
+```
+
+Null hypothesis: Both populations (seeded and unseeded clouds) are the same
+
+***Checking correlation***
+Before performing tests, we will check correlation between both populations unisg Spearman method.
+
+```{r}
+cor.test(seeded,unseeded,method="spearman")
+```
+
+Calculated rho value (0.168) is low so there is no significant correlation between populations.
+
+*Point 1*
+
+Analyse of data:
+
+```{r, echo=FALSE, fig.height=6}
+par(mfrow=c(2,2))
+hist(seeded)
+qqnorm(seeded)
+hist(unseeded)
+qqnorm(unseeded)
+```
+
+Both populations do not follow normal distribution
+
+***Two samples t-test***
+
+```{r}
+t.test(seeded,unseeded)
+```
+
+Power value is greather than 0.05, so we should not reject our null hypothesis.
+However, two samples t-test should be based on normal data distribution so we cannot trust the results here.
+
+***Mann-Whitney test***
+
+Mann-Whitney test assumes that population follows random distribution so we expect reliable results.
+
+```{r}
+wilcox.test(seeded,unseeded)
+```
+
+Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
+
+***Kolmogorov-Smirnov test***
+
+Kolmogorov-Smirnov test is based on the differences in the histograms of the two samples.
+
+```{r}
+ks.test(seeded,unseeded)
+```
+
+Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
+
+*Point 2*
+
+Whole procedure will be repeated on square root of the values in given data.
+
+```{r, echo=FALSE, fig.height=6}
+sqrt_seeded = sqrt(seeded)
+sqrt_unseeded = sqrt(unseeded)
+
+par(mfrow=c(2,2))
+hist(sqrt_seeded)
+qqnorm(sqrt_seeded)
+hist(sqrt_unseeded)
+qqnorm(sqrt_unseeded)
+```
+
+We can see that data distribution can still be considered as random but Q-Q Plots show that now we are slightly closer to normal distribution than in Point 1.
+
+***Two samples t-test***
+
+```{r}
+t.test(sqrt_seeded,sqrt_unseeded)
+```
+
+Power value is less than 0.05. Null hypothesis is rejected.
+Because we use data that distribution is closer to normal, it affected on t-test results.
+
+***Mann-Whitney test***
+
+```{r}
+wilcox.test(sqrt_seeded,sqrt_unseeded)
+```
+
+Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
+The change of data didn't affect on test result.
+
+***Kolmogorov-Smirnov test***
+
+```{r}
+ks.test(sqrt_seeded,sqrt_unseeded)
+```
+
+Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
+The change of data didn't affect on test result.
+
+*Point 3*
+
+Whole procedure will be repeated on the square root of the square root of the values in given data.
+
+```{r, echo=FALSE, fig.height=6}
+sqrt2_seeded = sqrt(sqrt(seeded))
+sqrt2_unseeded = sqrt(sqrt(unseeded))
+
+par(mfrow=c(2,2))
+hist(sqrt2_seeded)
+qqnorm(sqrt2_seeded)
+hist(sqrt2_unseeded)
+qqnorm(sqrt2_unseeded)
+```
+
+Distribution of the square root of the square root of the values in given data habe normal distribution.
+
+***Two samples t-test***
+
+```{r}
+t.test(sqrt2_seeded,sqrt2_unseeded)
+```
+
+Power value is less than 0.05. Null hypothesis is rejected.
+Because now data has normal distribution, we can consider this test as reliable.
+
+***Mann-Whitney test***
+
+```{r}
+wilcox.test(sqrt2_seeded,sqrt2_unseeded)
+```
+
+Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
+The change of data again didn't affect on test result.
+
+***Kolmogorov-Smirnov test***
+
+```{r}
+ks.test(sqrt2_seeded,sqrt2_unseeded)
+```
+
+Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
+The change of data again didn't affect on test result.
+
+**Conclusion**
+We can consider null hypothesis as rejected. Seeding clouds have affect on rainfall.
+Manipulation in data (calculating square and square of square values of data) affected only on two samples t-test as it is based on normal distribution.
+Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on the differences in the histograms of the two samples, manipulation of data didn't affect on results of these tests.
 
 \pagebreak
 

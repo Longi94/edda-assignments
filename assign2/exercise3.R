@@ -20,7 +20,10 @@ ns = sum(data <= m0)
 #number of trials
 nt = length(data)
 
-binom.test(ns,nt,p=0.5) # p=0.5 - we consider median duration (N/2)
+result = binom.test(ns,nt,p=0.5) # p=0.5 - we consider median duration (N/2)
+result
+p = result[[3]]
+p
 #conclusion: p < 0.05 - H0 is rejected
 
 
@@ -30,5 +33,8 @@ binom.test(ns,nt,p=0.5) # p=0.5 - we consider median duration (N/2)
 
 ns_2 = sum(data > 72); # amount of deliveries that exceeded 72 days
 
-binom.test(ns_2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
+result = binom.test(ns_2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
+result
+p = result[[3]]
+p
 #conclusion: p < 0.05 - H0 is rejected

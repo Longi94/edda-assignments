@@ -1,5 +1,5 @@
 clouds = read.table("clouds.txt",header=TRUE)
-par(mfrow=c(2,2))
+par(mfrow=c(1,2))
 boxplot(clouds[,1],clouds[,2],names=c("seeded","unseeded"))
 plot(clouds[,1],clouds[,2])
 abline(0,1)
@@ -15,11 +15,13 @@ unseeded = clouds[,2]
 # POINT 1
 #######################
 
-# TWO SAMLES T-TEST
+par(mfrow=c(2,2))
 hist(seeded)
-hist(unseeded)
 qqnorm(seeded)
+hist(unseeded)
 qqnorm(unseeded)
+
+# TWO SAMLES T-TEST
 #t.test should be used for nornal distribution, our is random
 t.test(seeded,unseeded)
 # p = 0.05375
@@ -40,11 +42,13 @@ ks.test(seeded,unseeded)
 sqrt_seeded = sqrt(seeded)
 sqrt_unseeded = sqrt(unseeded)
 
-# TWO SAMLES T-TEST
+par(mfrow=c(2,2))
 hist(sqrt_seeded)
-hist(sqrt_unseeded)
 qqnorm(sqrt_seeded)
+hist(sqrt_unseeded)
 qqnorm(sqrt_unseeded)
+
+# TWO SAMLES T-TEST
 #t.test should be used for nornal distribution, our is random
 t.test(sqrt_seeded,sqrt_unseeded)
 # p = 0.01956

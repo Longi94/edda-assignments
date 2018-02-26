@@ -3,17 +3,9 @@ light1882 = scan("light1882.txt")
 lightnc = scan("light.txt")
 
 # convert to the proper km/s value
-for (i in 1:length(light1879)) {
-  light1879[i] = light1879[i] + 299000
-}
-
-for (i in 1:length(light1882)) {
-  light1882[i] = light1882[i] + 299000
-}
-
-for (i in 1:length(lightnc)) {
-  lightnc[i] = 7442000 / (lightnc[i] / 1000 + 24.8)
-}
+light1879 = light1879 + 299000
+light1882 = light1882 + 299000
+lightnc = 7442000 / (lightnc / 1000 + 24.8)
 
 # 1.
 hist(light1879)

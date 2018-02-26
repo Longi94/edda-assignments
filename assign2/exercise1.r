@@ -1,5 +1,5 @@
 par(mfrow=c(2,2))
-data = read.table("../Data/telephone.txt", header=TRUE)
+data = read.table("telephone.txt", header=TRUE)
 data = data[,1]
 
 x=seq(0,max(data),length=1000)
@@ -18,6 +18,7 @@ pl = sum(tstar<t_stat)/B
 pr=sum(tstar>t_stat)/B
 p = 2*min(pl,pr)
 p
+
 #p is always below 0.05 and therefore it does not stem from the exponential distribution. 
 #Furthermore, the histogram resembles more of a bell-shaped curve rather than an exponential one
 

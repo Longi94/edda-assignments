@@ -10,6 +10,28 @@ highlight: tango
 ## Exercises
 
 ### Exercise 1
+After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
+Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
+
+The bootstrap test was conducted in the following way:
+```{r, echo=False, fig.height=6}
+x=seq(0,max(data),length=1000)
+
+t_stat = median(data)
+B = 1000
+tstar = numeric(B)
+n = length(data)
+for(i in 1:B){
+ xstar = rexp(n,c(0.01,0.1))
+ tstar[i] = median(xstar)
+}
+
+hist(tstar, prob=T)
+pl = sum(tstar<t_stat)/B
+pr=sum(tstar>t_stat)/B
+p = 2*min(pl,pr)
+p
+```
 
 \pagebreak
 
@@ -240,7 +262,55 @@ Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on
 \pagebreak
 
 ### Exercise 6
+```{r, echo=FALSE}
+data = read.table("run.txt", header=TRUE)
+before = data[,1]
+after = data[,2]
+soft_d_before = before[1:12]
+soft_d_after = after[1:12]
+energy_d_before = before[13:24]
+energy_d_after = after[13:24]
+```
+**point 1**
+**point 2**
+After conducting the appropriate t-tests, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
 
+```{r}
+#Q2
+#test difference in speed before and after soft drink
+t.test(soft_d_before, soft_d_after, paired=TRUE)
+
+#test difference in speed before and after energy drink
+t.test(energy_d_before, energy_d_after, paired=TRUE)
+```
+
+**point 3**
+A permutation test was performed, and the p value was analyzed. The p value was very high, greater than 0.9. Therefore we can reject the null hypothesis, meaning that the type differences are not affected by the type of drinks.
+
+The test was conducted in the following way:
+```{r}
+tstat = function(x,y){mean(x-y)}
+B = 1000
+tstar = numeric(B)
+for(i in 1:B){
+  tempstar = t(apply(cbind(before,after), 1, sample))
+  tstar[i] = tstat(tempstar[,1], tempstar[,2])
+}
+
+ myt= tstat(before, after)
+ hist(tstar)
+ pl=sum(tstar<myt)/B
+ pr=sum(tstar>myt)/B
+ p=2*min(pl,pr)
+ p 
+```
+
+**point 4**
+There would be no need for the softdrinks, which would give us a bigger sample size for energy drinks.
+
+**point 5**
+Yes the objection is similar as the participants should not have been split, but rather all of them should have drank the energy drink and then drank the soft drink and ran, so that you can compare time differences for the same person since different people might simply have different running speed.
+Furthermore, maybe the initial run (without drinking energy drinks or softdrinks) could have been removed since this would mean that the participants might be too tired for the 3rd run.
 \pagebreak
 
 ### Exercise 7

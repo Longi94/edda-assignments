@@ -8,9 +8,15 @@ energy_d_before = before[13:24]
 energy_d_after = after[13:24]
 
 #Q1
-plot(before~after,pch=grp,col=grp,data=data); abline(0,1)
-boxplot(before,after)
-boxplot(before-after)
+hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
+hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
+qqnorm(after); qqline(after)
+qqnorm(before); qqline(before)
+
+hist(soft_d_after, freq=FALSE); lines(density(soft_d_after), col="red", lwd=2) 
+hist(soft_d_before, freq=FALSE); lines(density(soft_d_before), col="red",lwd=2)
+qqnorm(soft_d_after); qqline(soft_d_after)
+qqnorm(soft_d_before); qqline(soft_d_before)
 
 #Q2
 #test difference in speed before and after soft drink
@@ -33,7 +39,7 @@ for(i in 1:B){
  pl=sum(tstar<myt)/B
  pr=sum(tstar>myt)/B
  p=2*min(pl,pr)
- pl;pr;p 
+ p 
  #p has a high value, approx 0.9 meaning that we can reject H0 in this case. There time differences are not affected by the type of drink.
  
  #N.B. not sure if I understood correctly but there is no need for code here. Just reasoning.

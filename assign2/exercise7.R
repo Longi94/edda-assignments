@@ -12,10 +12,54 @@ qqnorm(cyclopropane)
 # Seems reasonable for the last one, second one is questionable, first is not a normal population
 
 # 2.
-# not sure, I think they mean that we should just do a two sample t test on each pair of groups
-t.test(isofluorane,halothane,var.equal=TRUE)[[3]] # 0.7327132 accept null hypo
-t.test(cyclopropane,halothane,var.equal=TRUE)[[3]] # 0.0240889 reject null hypo
-t.test(isofluorane,cyclopropane,var.equal=TRUE)[[3]] # 0.01827111 reject null hypo
+# use permutation tests to see the difference between the outcomes
+mystat = function (x, y) { mean(x - y) }
+B = 1000
+
+# isofluorane and halothane
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(isofluorane, halothane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt1 = mystat(isofluorane, halothane)
+
+hist(tstar)
+pl1 = sum(tstar < myt1) / B
+pr1 = sum(tstar > myt1) / B
+p = 2 * min(pl1, pr1)
+p # 0.696 accept the null hypo, same concetration that isofluorane and halothane has the same concentration
+
+# cyclopropane and halothane
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(cyclopropane, halothane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt2 = mystat(cyclopropane, halothane)
+
+hist(tstar)
+pl2 = sum(tstar < myt2) / B
+pr2 = sum(tstar > myt2) / B
+p = 2 * min(pl2, pr2)
+p # 0.058 there is a big difference between the concetrations
+
+# isofluorane and cyclopropane
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(isofluorane, cyclopropane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt3 = mystat(isofluorane, cyclopropane)
+
+hist(tstar)
+pl3 = sum(tstar < myt3) / B
+pr3 = sum(tstar > myt3) / B
+p = 2 * min(pl3, pr3)
+p # 0.48 there is a big difference between the concetrations
 
 # estimated concentration values, this supports the above p-values
 mean(isofluorane) # 0.434

@@ -13,6 +13,17 @@ highlight: tango
 ```{r}
 data = read.table("telephone.txt", header=TRUE)
 data = data[,1]
+
+seqconst = seq(0.01,0.1,0.001)
+constindex = 1
+parr = numeric(length(seqconst))
+
+x=seq(0,max(data),length=1000)
+
+t_stat = median(data)
+B = 1000
+tstar = numeric(B)
+n = length(data)
 ```
 
 After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
@@ -20,22 +31,21 @@ Furthermore, the histogram has a bell-shaped curve rather than an exponential cu
 
 The bootstrap test was conducted in the following way:
 ```{r, echo=False, fig.height=6}
-x=seq(0,max(data),length=1000)
 
-t_stat = median(data)
-B = 1000
-tstar = numeric(B)
-n = length(data)
-for(i in 1:B){
- xstar = rexp(n,c(0.01,0.1))
- tstar[i] = median(xstar)
+for(j in seqconst){
+  for(i in 1:B){
+    xstar = rexp(n,j)
+    tstar[i] = median(xstar)
+  }
+  
+  pl = sum(tstar<t_stat)/B
+  pr=sum(tstar>t_stat)/B
+  p = 2*min(pl,pr)
+  parr[constindex] = p
+  constindex = constindex+1
 }
 
-hist(tstar, prob=T)
-pl = sum(tstar<t_stat)/B
-pr=sum(tstar>t_stat)/B
-p = 2*min(pl,pr)
-p
+seqconst[parr>0.05]
 ```
 
 \pagebreak

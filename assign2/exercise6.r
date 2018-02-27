@@ -26,13 +26,19 @@ t.test(soft_d_before, soft_d_after, paired=TRUE)
 #test difference in speed before and after energy drink
 t.test(energy_d_before, energy_d_after, paired=TRUE)
 
-#Q3 
+sum#Q3 
  #computing differences
  diffarr = numeric(length(before))
  for(i in 1:length(before)){
    diffarr[i] = abs(after[i]-before[i])
  }
- t.test(before,after,paired=TRUE)
+ 
+ drinkframe=data.frame(difference=diffarr, variety=factor(data[,3]))
+ 
+ drinkaov = lm(difference~variety,data=drinkframe)
+ result = anova(drinkaov)
+ 
+ mt.test(before,after,paired=TRUE)
  #p has a high value, approx 0.9 meaning that we do not reject H0 in this case. There time differences are affected by the type of drink.
  
  #N.B. not sure if I understood correctly but there is no need for code here. Just reasoning.

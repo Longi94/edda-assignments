@@ -32,6 +32,6 @@ plot(parr)
 #p is always below 0.05 and therefore it does not stem from the exponential distribution. 
 #Furthermore, the histogram resembles more of a bell-shaped curve rather than an exponential one
 
-
+hist(data)
 boxplot(tstar)
 qqnorm(tstar); qqline(tstar)

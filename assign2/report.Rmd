@@ -10,6 +10,11 @@ highlight: tango
 ## Exercises
 
 ### Exercise 1
+```{r}
+data = read.table("telephone.txt", header=TRUE)
+data = data[,1]
+```
+
 After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
 Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
 
@@ -83,7 +88,7 @@ As we are working with the same set of data, we will use sign test one more time
 
 ```{r}
 ns2 = sum(data > 72); # amount of deliveries that exceeded 72 days
-result = binom.test(ns_2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
+result = binom.test(ns2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
 result
 p = result[[3]]
 p

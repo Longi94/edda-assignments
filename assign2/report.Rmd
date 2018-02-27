@@ -7,6 +7,10 @@ fontsize: 11pt
 highlight: tango
 ---
 
+```{r, echo = FALSE}
+library(knitr)
+```
+
 ## Exercises
 
 ### Exercise 1
@@ -51,6 +55,65 @@ seqconst[parr>0.05]
 \pagebreak
 
 ### Exercise 2
+
+First we load the files and convert them to the proper km/s format so it is more human readable and easier to work with.
+
+``` {r}
+light1879 = scan("light1879.txt")
+light1882 = scan("light1882.txt")
+lightnc = scan("light.txt")
+
+light1879 = light1879 + 299000
+light1882 = light1882 + 299000
+lightnc = 7442000 / (lightnc / 1000 + 24.8)
+```
+
+We generate the histograms and boxplots.
+
+``` {r, fig.height = 3}
+par(mfrow = c(1, 3))
+hist(light1879)
+hist(light1882)
+hist(lightnc)
+
+boxplot(light1879)
+boxplot(light1882)
+boxplot(lightnc)
+```
+
+It is reasonable to say, that the first two datasets are from a normal distribution. Although the second one has significantly less data so it mihgt not be normal distribution. The third dataset has some outlier results which makes the histogram look more like a lognormal distribution. This indicates that the first type of experiments yields fairly consistent results but the second one does not.
+
+Assuming that the first two datasets are from a normal distribution, we can easily calculate the confidence intervals by calculating the margin based on the normality of the samples.
+
+```{r}
+error1 = qnorm(0.975) * sd(light1879) / sqrt(length(light1879))
+T1 = mean(light1879)
+c(T1 - error1, T1 + error1)
+
+error2 = qnorm(0.975) * sd(light1882) / sqrt(length(light1882))
+T2 = mean(light1882)
+c(T2 - error2, T2 + error2)
+```
+
+The third dataset is not a normal distribution so we bootstrap the confidence interval by simulating the distribution.
+
+```{r}
+B = 1000
+Tstar = numeric(B)
+for (i in 1:B) {
+  Xstar = sample(lightnc, replace = TRUE)
+  Tstar[i] = mean(Xstar)
+}
+Tstar25 = quantile(Tstar, 0.025)
+Tstar975 = quantile(Tstar, 0.975)
+
+T3 = mean(lightnc)
+c(2 * T3 - Tstar975, 2 * T3 - Tstar25)
+```
+
+The first dataset has the smalles confidence interval and the second dataset has the biggest. This makes sense since the first dataset has the most data and the second one has the least data. The more measurementes we make the smaller the confidence interval will be provided that the measurements are accurate and consistent.
+
+The speed of light is **299792.458**. This is inside of the second confience interval but outside of the other two. So we can say that it is consistent only with Michelsons second experiment.
 
 \pagebreak
 
@@ -273,6 +336,45 @@ Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on
 \pagebreak
 
 ### Exercise 5
+
+We load and generate the scatter plots. We also draw the trend line on the plots to make it easier to figure out which veriables are correlated or not.
+
+```{r}
+peruvians = read.csv(file = "peruvians.txt", header = TRUE, sep = " ")
+peruvians = peruvians[, -c(5, 6, 7)]
+
+pairs(peruvians, panel=panel.smooth)
+```
+
+We are looking for plots where the trend line is monotonuously increasing or decreasing in a realatively steady pace, because that indicates a correlation between the variables. Observing the plots we would expect some correlation between the following variable pairs.
+
+| Var1      | Var2      |
+| --------- | --------- |
+| age       | migration |
+| age       | weight    |
+| migration | weight    |
+| weight    | systolic  |
+
+We perform Spearman's rank correlation test on each pair of veriables.
+
+```{r, warning = FALSE}
+attach(peruvians)
+variables = c("age", "weight", "length", "wrist", "systolic", "diastolic")
+
+corr = numeric(length(variables))
+corr[1] = cor.test(age, migration, method = "spearman")[[4]]
+corr[2] = cor.test(weight, migration, method = "spearman")[[4]]
+corr[3] = cor.test(length, migration, method = "spearman")[[4]]
+corr[4] = cor.test(wrist, migration, method = "spearman")[[4]]
+corr[5] = cor.test(systolic, migration, method = "spearman")[[4]]
+corr[6] = cor.test(diastolic, migration, method = "spearman")[[4]]
+detach(peruvians)
+
+tbl = matrix(c(variables, corr), ncol = 2)
+kable(tbl, col.names = c("variable", "correlation"))
+```
+
+As we expected, there is a fairly high correlation result between age-migration and weight-migration, while the others have a value close enough to zero, that it is negligible. The correlation between age and migration is understandable and it indicates that Peruvians tend to migrate around a certain age. The correlation between weight and migration also makes sense since after they move to a modern society they will live a healthier life and reach a healthy weight. The correlation between the height (assuming length means the height of the person) is negligible. The correlation betwen the heartrate and migration is not legligible, and it is also due to the healthier lifestyle of the migrated Peruvians. The correlation of the systolic and diastolic bloodpresure is also negligiable, but it still reasonable to say the the difference between the two decreases the longer a Peruvian had lived in a modern society.
 
 \pagebreak
 

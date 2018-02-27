@@ -47,6 +47,11 @@ for(j in seqconst){
 
 seqconst[parr>0.05]
 ```
+**point 2**
+```{r, fig.height=6}
+hist(data)
+```
+Looking at the histogram we can see that most people either spend too little or spned a lot. Therfore, marketing managers should try to get the people that spend to little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
 
 \pagebreak
 
@@ -278,6 +283,7 @@ Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on
 
 ### Exercise 6
 ```{r, echo=FALSE}
+par(mfrow=c(2,2))
 data = read.table("run.txt", header=TRUE)
 before = data[,1]
 after = data[,2]
@@ -285,8 +291,19 @@ soft_d_before = before[1:12]
 soft_d_after = after[1:12]
 energy_d_before = before[13:24]
 energy_d_after = after[13:24]
+drink_type = data[,3]
 ```
 **point 1**
+Investigating the min, mean, max, and median values of the before and after values we see that they are similar, but not the same. Furthermore, the histograms show that the before and after have a bell-shaped curve.
+```{r, echo=FALSE}
+min(before);mean(before);max(before);median(before)
+min(after);mean(after);max(after);median(after)
+
+
+plot(data)
+hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
+hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
+```
 **point 2**
 After conducting the appropriate t-tests, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
 
@@ -300,24 +317,20 @@ t.test(energy_d_before, energy_d_after, paired=TRUE)
 ```
 
 **point 3**
-A permutation test was performed, and the p value was analyzed. The p value was very high, greater than 0.9. Therefore we can reject the null hypothesis, meaning that the type differences are not affected by the type of drinks.
+The difference in speed per pupil was calculated an a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis.
 
-The test was conducted in the following way:
+The ANOVA test was performed in the following way:
 ```{r}
-tstat = function(x,y){mean(x-y)}
-B = 1000
-tstar = numeric(B)
-for(i in 1:B){
-  tempstar = t(apply(cbind(before,after), 1, sample))
-  tstar[i] = tstat(tempstar[,1], tempstar[,2])
-}
-
- myt= tstat(before, after)
- hist(tstar)
- pl=sum(tstar<myt)/B
- pr=sum(tstar>myt)/B
- p=2*min(pl,pr)
- p 
+diffarr = numeric(length(before))
+ for(i in 1:length(before)){
+   diffarr[i] = abs(after[i]-before[i])
+ }
+ 
+ drinkframe=data.frame(difference=diffarr, variety=factor(data[,3]))
+ 
+ drinkaov = lm(difference~variety,data=drinkframe)
+ anova(drinkaov)
+ summary(drinkaov)
 ```
 
 **point 4**
@@ -328,6 +341,19 @@ Yes the objection is similar as the participants should not have been split, but
 Furthermore, maybe the initial run (without drinking energy drinks or softdrinks) could have been removed since this would mean that the participants might be too tired for the 3rd run.
 \pagebreak
 
+**point 6**
+We assume that the distribution is normal. To turn the vector of differences into a residual we can use the residuals() funciton provided in R in the following way:
+```{r}
+res = residuals(drinkaov)
+```
+
+Then we can apply use the variable "res" to plot a QQPLOT and examine it.
+
+```{r, fig.height=6}
+qqnorm(res); qqline(res)
+```
+
+By looking at the figure above, we can clearly see that the data does not follow a straight line and so it is not of normal distribution
 ### Exercise 7
 
 \pagebreak

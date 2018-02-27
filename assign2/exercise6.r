@@ -9,15 +9,14 @@ energy_d_after = after[13:24]
 drink_type = data[,3]
 
 #Q1
-hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
-hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
-qqnorm(after); qqline(after)
-qqnorm(before); qqline(before)
+min(before);mean(before);max(before);median(before)
+min(after);mean(after);max(after);median(after)
 
-hist(soft_d_after, freq=FALSE); lines(density(soft_d_after), col="red", lwd=2) 
-hist(soft_d_before, freq=FALSE); lines(density(soft_d_before), col="red",lwd=2)
-qqnorm(soft_d_after); qqline(soft_d_after)
-qqnorm(soft_d_before); qqline(soft_d_before)
+plot(data)
+
+hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
+hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
+
 
 #Q2
 #test difference in speed before and after soft drink
@@ -26,7 +25,7 @@ t.test(soft_d_before, soft_d_after, paired=TRUE)
 #test difference in speed before and after energy drink
 t.test(energy_d_before, energy_d_after, paired=TRUE)
 
-sum#Q3 
+#Q3 
  #computing differences
  diffarr = numeric(length(before))
  for(i in 1:length(before)){
@@ -36,10 +35,10 @@ sum#Q3
  drinkframe=data.frame(difference=diffarr, variety=factor(data[,3]))
  
  drinkaov = lm(difference~variety,data=drinkframe)
- result = anova(drinkaov)
- 
- mt.test(before,after,paired=TRUE)
- #p has a high value, approx 0.9 meaning that we do not reject H0 in this case. There time differences are affected by the type of drink.
+ anova(drinkaov)
+ summary(drinkaov)
+ confint(drinkaov)
+ #p has a low value, 
  
  #N.B. not sure if I understood correctly but there is no need for code here. Just reasoning.
  
@@ -55,9 +54,5 @@ sum#Q3
  #Q6
  #N.B. I'm not sure what the is meant by assumed distribution. I went through the notes and I'm quite sure that a permutation test is required
  #In order to change the vector values to residuals we can apply a linear regression model on the vector
- res = residuals(lm(diffarr~drink_type, data=data))
- #plot(res)
- #considering that QQplots are specified, then the assumed distribution should be Normal.
- qqnorm(res)
- qqline(res)
+ qqnorm(residuals(drinkaov)); qqline(residuals(drinkaov))
  

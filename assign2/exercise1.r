@@ -33,5 +33,4 @@ plot(parr)
 #Furthermore, the histogram resembles more of a bell-shaped curve rather than an exponential one
 
 hist(data)
-boxplot(tstar)
-qqnorm(tstar); qqline(tstar)
+

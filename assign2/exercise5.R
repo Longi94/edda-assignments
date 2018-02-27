@@ -2,7 +2,7 @@ peruvians = read.csv(file = "peruvians.txt", header = TRUE, sep = " ")
 peruvians = peruvians[, -c(5, 6, 7)]
 
 # 1.
-pairs(peruvians)
+pairs(peruvians, panel=panel.smooth)
 
 # gota think about it first, no idea
 

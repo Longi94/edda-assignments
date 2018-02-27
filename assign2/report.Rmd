@@ -30,7 +30,7 @@ After conducting the bootstrap test and analyzing the P value we can conclude th
 Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
 
 The bootstrap test was conducted in the following way:
-```{r, echo=False, fig.height=6}
+```{r, echo=FALSE, fig.height=6}
 
 for(j in seqconst){
   for(i in 1:B){

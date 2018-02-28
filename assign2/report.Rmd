@@ -14,15 +14,18 @@ library(knitr)
 ## Exercises
 
 ### Exercise 1
-```{r}
-data = read.table("telephone.txt", header=TRUE)
-data = data[,1]
 
-seqconst = seq(0.01,0.1,0.001)
+**Point 1**
+
+```{r}
+data = read.table("telephone.txt", header = TRUE)
+data = data[, 1]
+
+seqconst = seq(0.01, 0.1, 0.001)
 constindex = 1
 parr = numeric(length(seqconst))
 
-x=seq(0,max(data),length=1000)
+x = seq(0, max(data), length = 1000)
 
 t_stat = median(data)
 B = 1000
@@ -30,33 +33,35 @@ tstar = numeric(B)
 n = length(data)
 ```
 
-A bootstrap test was conducted for a set of lambda values, and then each p-value was stored so that we can analyze if the data for one or more of the lambda values stems from the exponential distribution.
+After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
+Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
 
 The bootstrap test was conducted in the following way:
-```{r, echo=FALSE, fig.height=6}
 
-for(j in seqconst){
-  for(i in 1:B){
-    xstar = rexp(n,j)
+```{r, fig.height=6}
+for (j in seqconst) {
+  for (i in 1:B) {
+    xstar = rexp(n, j)
     tstar[i] = median(xstar)
   }
-  
-  pl = sum(tstar<t_stat)/B
-  pr=sum(tstar>t_stat)/B
-  p = 2*min(pl,pr)
+
+  pl = sum(tstar < t_stat) / B
+  pr = sum(tstar > t_stat) / B
+  p = 2 * min(pl, pr)
   parr[constindex] = p
-  constindex = constindex+1
+  constindex = constindex + 1
 }
 
-seqconst[parr>0.05]
+seqconst[parr > 0.05]
 ```
 
-The values printed from seqconst[parr>0.05] gives us the lambda values from which the data stems from the exponential distribution.
-**point 2**
-```{r, fig.height=6}
+**Point 2**
+
+```{r, fig}
 hist(data)
 ```
-Looking at the histogram we can see that most people either spend too little or spend a lot. Therfore, marketing managers should try to get the people that spend too little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
+
+Looking at the histogram we can see that most people either spend too little or spned a lot. Therfore, marketing managers should try to get the people that spend to little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
 
 \pagebreak
 
@@ -74,6 +79,8 @@ light1882 = light1882 + 299000
 lightnc = 7442000 / (lightnc / 1000 + 24.8)
 ```
 
+**Point 1**
+
 We generate the histograms and boxplots.
 
 ``` {r, fig.height = 3}
@@ -88,6 +95,8 @@ boxplot(lightnc)
 ```
 
 It is reasonable to say, that the first two datasets are from a normal distribution. Although the second one has significantly less data so it mihgt not be normal distribution. The third dataset has some outlier results which makes the histogram look more like a lognormal distribution. This indicates that the first type of experiments yields fairly consistent results but the second one does not.
+
+**Point 2**
 
 Assuming that the first two datasets are from a normal distribution, we can easily calculate the confidence intervals by calculating the margin based on the normality of the samples.
 
@@ -117,7 +126,11 @@ T3 = mean(lightnc)
 c(2 * T3 - Tstar975, 2 * T3 - Tstar25)
 ```
 
+**Point 3**
+
 The first dataset has the smalles confidence interval and the second dataset has the biggest. This makes sense since the first dataset has the most data and the second one has the least data. The more measurementes we make the smaller the confidence interval will be provided that the measurements are accurate and consistent.
+
+**Point 4**
 
 The speed of light is **299792.458**. This is inside of the second confience interval but outside of the other two. So we can say that it is consistent only with Michelsons second experiment.
 
@@ -125,20 +138,20 @@ The speed of light is **299792.458**. This is inside of the second confience int
 
 ### Exercise 3
 
-*Point 1*
+**Point 1**
 
 Null hypothesis: Median duration is smaller or equal to 31 days.
 
-***Choosing appropriate test***
+*Choosing appropriate test*
 
 To choose appropriate test for this exercise, we have to analyse given data.
 Data consist one numerical outcome for experimental unit - part delivery duration.
 Histogram and Q-Q Plot were made to check distribution of data.
 
-```{r, echo=FALSE, fig.height=6}
+```{r, fig.height=4}
 data = scan("klm.txt")
-par(mfrow=c(1,2))
-hist(data, prob=T)
+par(mfrow = c(1, 2))
+hist(data, prob = T)
 qqnorm(data)
 ```
 
@@ -151,7 +164,7 @@ For test purposes we will use sign test as it is recommended for random data dis
 m0 = 31
 ns = sum(data <= m0) #number of successes
 nt = length(data) #number of trials
-result = binom.test(ns,nt,p=0.5) # p=0.5 - we consider median duration (N/2)
+result = binom.test(ns, nt, p = 0.5) # p=0.5 - we consider median duration (N/2)
 result
 p = result[[3]]
 p
@@ -159,15 +172,16 @@ p
 
 Power value is less than 0,05% so we have to reject our null hypothesis.
 
-*Point 2*
+**Point 2**
 
 Null hypothesis: At most 10% of the parts arrives after maximum period of 72 days.
 
 As we are working with the same set of data, we will use sign test one more time.
 
 ```{r}
-ns2 = sum(data > 72); # amount of deliveries that exceeded 72 days
-result = binom.test(ns2,nt,p=0.1) # p=0.1 - we consider that at most 10% of data is successfull
+ns2 = sum(data > 72) # amount of deliveries that exceeded 72 days
+# p=0.1 - we consider that at most 10% of data is successfull
+result = binom.test(ns2, nt, p = 0.1)
 result
 p = result[[3]]
 p
@@ -181,34 +195,34 @@ Power value is less than 0,05% so we have to reject our null hypothesis.
 
 In this exercise we will test if seeding clouds has impact on rainfall.
 
-```{r, echo=FALSE, fig.height=6}
-clouds = read.table("clouds.txt",header=TRUE)
-par(mfrow=c(1,2))
-boxplot(clouds[,1],clouds[,2],names=c("seeded","unseeded"))
-plot(clouds[,1],clouds[,2])
-abline(0,1)
+```{r, echo=FALSE, fig.height=4}
+clouds = read.table("clouds.txt", header = TRUE)
+par(mfrow = c(1, 2))
+boxplot(clouds[, 1], clouds[, 2], names = c("seeded", "unseeded"))
+plot(clouds[, 1], clouds[, 2])
+abline(0, 1)
 
-seeded = clouds[,1]
-unseeded = clouds[,2]
+seeded = clouds[, 1]
+unseeded = clouds[, 2]
 ```
 
 Null hypothesis: Both populations (seeded and unseeded clouds) are the same
 
-***Checking correlation***
+*Checking correlation*
 Before performing tests, we will check correlation between both populations unisg Spearman method.
 
 ```{r}
-cor.test(seeded,unseeded,method="spearman")
+cor.test(seeded, unseeded, method = "spearman")
 ```
 
 Calculated rho value (0.168) is low so there is no significant correlation between populations.
 
-*Point 1*
+**Point 1**
 
-Analyse of data:
+Analysis of data:
 
-```{r, echo=FALSE, fig.height=6}
-par(mfrow=c(2,2))
+```{r, fig.height=6}
+par(mfrow = c(2, 2))
 hist(seeded)
 qqnorm(seeded)
 hist(unseeded)
@@ -220,7 +234,7 @@ Both populations do not follow normal distribution
 ***Two samples t-test***
 
 ```{r}
-t.test(seeded,unseeded)
+t.test(seeded, unseeded)
 ```
 
 Power value is greather than 0.05, so we should not reject our null hypothesis.
@@ -231,7 +245,7 @@ However, two samples t-test should be based on normal data distribution so we ca
 Mann-Whitney test assumes that population follows random distribution so we expect reliable results.
 
 ```{r}
-wilcox.test(seeded,unseeded)
+wilcox.test(seeded, unseeded)
 ```
 
 Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
@@ -241,20 +255,20 @@ Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
 Kolmogorov-Smirnov test is based on the differences in the histograms of the two samples.
 
 ```{r}
-ks.test(seeded,unseeded)
+ks.test(seeded, unseeded)
 ```
 
 Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
 
-*Point 2*
+**Point 2**
 
-Whole procedure will be repeated on square root of the values in given data.
+Whole procedure will be repeated on the square root of the values in given data.
 
 ```{r, echo=FALSE, fig.height=6}
 sqrt_seeded = sqrt(seeded)
 sqrt_unseeded = sqrt(unseeded)
 
-par(mfrow=c(2,2))
+par(mfrow = c(2, 2))
 hist(sqrt_seeded)
 qqnorm(sqrt_seeded)
 hist(sqrt_unseeded)
@@ -266,7 +280,7 @@ We can see that data distribution can still be considered as random but Q-Q Plot
 ***Two samples t-test***
 
 ```{r}
-t.test(sqrt_seeded,sqrt_unseeded)
+t.test(sqrt_seeded, sqrt_unseeded)
 ```
 
 Power value is less than 0.05. Null hypothesis is rejected.
@@ -275,7 +289,7 @@ Because we use data that distribution is closer to normal, it affected on t-test
 ***Mann-Whitney test***
 
 ```{r}
-wilcox.test(sqrt_seeded,sqrt_unseeded)
+wilcox.test(sqrt_seeded, sqrt_unseeded)
 ```
 
 Power value of Mann-Whitney test is less than 0.05. Null hypothesis is rejected.
@@ -284,21 +298,21 @@ The change of data didn't affect on test result.
 ***Kolmogorov-Smirnov test***
 
 ```{r}
-ks.test(sqrt_seeded,sqrt_unseeded)
+ks.test(sqrt_seeded, sqrt_unseeded)
 ```
 
 Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
 The change of data didn't affect on test result.
 
-*Point 3*
+**Point 3**
 
 Whole procedure will be repeated on the square root of the square root of the values in given data.
 
-```{r, echo=FALSE, fig.height=6}
+```{r, fig.height=6}
 sqrt2_seeded = sqrt(sqrt(seeded))
 sqrt2_unseeded = sqrt(sqrt(unseeded))
 
-par(mfrow=c(2,2))
+par(mfrow = c(2, 2))
 hist(sqrt2_seeded)
 qqnorm(sqrt2_seeded)
 hist(sqrt2_unseeded)
@@ -310,7 +324,7 @@ Distribution of the square root of the square root of the values in given data h
 ***Two samples t-test***
 
 ```{r}
-t.test(sqrt2_seeded,sqrt2_unseeded)
+t.test(sqrt2_seeded, sqrt2_unseeded)
 ```
 
 Power value is less than 0.05. Null hypothesis is rejected.
@@ -328,13 +342,14 @@ The change of data again didn't affect on test result.
 ***Kolmogorov-Smirnov test***
 
 ```{r}
-ks.test(sqrt2_seeded,sqrt2_unseeded)
+ks.test(sqrt2_seeded, sqrt2_unseeded)
 ```
 
 Power value of Kolmogorov-Smirnov test is less than 0.05. Null hypothesis is rejected.
 The change of data again didn't affect on test result.
 
 **Conclusion**
+
 We can consider null hypothesis as rejected. Seeding clouds have affect on rainfall.
 Manipulation in data (calculating square and square of square values of data) affected only on two samples t-test as it is based on normal distribution.
 Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on the differences in the histograms of the two samples, manipulation of data didn't affect on results of these tests.
@@ -343,13 +358,15 @@ Because Mann-Whitney test is based ranks and Kolmogorov-Smirnov test is based on
 
 ### Exercise 5
 
+**Point 1**
+
 We load and generate the scatter plots. We also draw the trend line on the plots to make it easier to figure out which veriables are correlated or not.
 
 ```{r}
 peruvians = read.csv(file = "peruvians.txt", header = TRUE, sep = " ")
-peruvians = peruvians[, -c(5, 6, 7)]
+peruvians = peruvians[,-c(5, 6, 7)]
 
-pairs(peruvians, panel=panel.smooth)
+pairs(peruvians, panel = panel.smooth)
 ```
 
 We are looking for plots where the trend line is monotonuously increasing or decreasing in a realatively steady pace, because that indicates a correlation between the variables. Observing the plots we would expect some correlation between the following variable pairs.
@@ -360,6 +377,8 @@ We are looking for plots where the trend line is monotonuously increasing or dec
 | age       | weight    |
 | migration | weight    |
 | weight    | systolic  |
+
+**Point 2**
 
 We perform Spearman's rank correlation test on each pair of veriables.
 
@@ -385,66 +404,83 @@ As we expected, there is a fairly high correlation result between age-migration 
 \pagebreak
 
 ### Exercise 6
+
 ```{r, echo=FALSE}
-par(mfrow=c(2,2))
-data = read.table("run.txt", header=TRUE)
-before = data[,1]
-after = data[,2]
+par(mfrow = c(2, 2))
+data = read.table("run.txt", header = TRUE)
+before = data[, 1]
+after = data[, 2]
 soft_d_before = before[1:12]
 soft_d_after = after[1:12]
 energy_d_before = before[13:24]
 energy_d_after = after[13:24]
-drink_type = data[,3]
+drink_type = data[, 3]
 ```
-**point 1**
+
+**Point 1**
+
 Investigating the min, mean, max, and median values of the before and after values we see that they are similar, but not the same. Furthermore, the histograms show that the before and after have a bell-shaped curve.
-```{r, echo=FALSE}
-min(before);mean(before);max(before);median(before)
-min(after);mean(after);max(after);median(after)
+
+```{r, fig.height=4}
+min(before)
+mean(before)
+max(before)
+median(before)
+min(after)
+mean(after)
+max(after)
+median(after)
 
 
 plot(data)
-hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
-hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
+hist(before, freq = FALSE)
+lines(density(before), col = "red", lwd = 2)
+hist(after, freq = FALSE)
+lines(density(after), col = "red", lwd = 2) 
 ```
-**point 2**
-After conducting the appropriate t-tests and looking at their p-values, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
+
+**Point 2**
+
+After conducting the appropriate t-tests, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
 
 ```{r}
-#Q2
 #test difference in speed before and after soft drink
-t.test(soft_d_before, soft_d_after, paired=TRUE)
+t.test(soft_d_before, soft_d_after, paired = TRUE)
 
 #test difference in speed before and after energy drink
-t.test(energy_d_before, energy_d_after, paired=TRUE)
+t.test(energy_d_before, energy_d_after, paired = TRUE)
 ```
 
-**point 3**
-The difference in speed per pupil was calculated and a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis which stated that there was no difference before or after consuming any beverage
+**Point 3**
+
+The difference in speed per pupil was calculated an a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis.
 
 The ANOVA test was performed in the following way:
+
 ```{r}
 diffarr = numeric(length(before))
- for(i in 1:length(before)){
-   diffarr[i] = abs(after[i]-before[i])
- }
- 
- drinkframe=data.frame(difference=diffarr, variety=factor(data[,3]))
- 
- drinkaov = lm(difference~variety,data=drinkframe)
- anova(drinkaov)
- summary(drinkaov)
+for (i in 1:length(before)) {
+  diffarr[i] = abs(after[i] - before[i])
+}
+
+drinkframe = data.frame(difference = diffarr, variety = factor(data[, 3]))
+
+drinkaov = lm(difference ~ variety, data = drinkframe)
+anova(drinkaov)
+summary(drinkaov)
 ```
 
-**point 4**
+**Point 4**
+
 There would be no need for the softdrinks, which would give us a bigger sample size for energy drinks.
 
-**point 5**
-Yes the objection is similar as the participants should not have been split, but rather all of them should have drank the energy drink and then drank the soft drink and ran, so that you can compare time differences for the same person since different people might simply have a different running speed.
-Furthermore, maybe the initial run (without drinking energy drinks or softdrinks) could have been removed since this would mean that the participants might be too tired for the 3rd run.
-\pagebreak
+**Point 5**
 
-**point 6**
+Yes the objection is similar as the participants should not have been split, but rather all of them should have drank the energy drink and then drank the soft drink and ran, so that you can compare time differences for the same person since different people might simply have different running speed.
+Furthermore, maybe the initial run (without drinking energy drinks or softdrinks) could have been removed since this would mean that the participants might be too tired for the 3rd run.
+
+**Point 6**
+
 We assume that the distribution is normal. To turn the vector of differences into a residual we can use the residuals() funciton provided in R in the following way:
 ```{r}
 res = residuals(drinkaov)
@@ -452,63 +488,79 @@ res = residuals(drinkaov)
 
 Then we can apply use the variable "res" to plot a QQPLOT and examine it.
 
-```{r, fig.height=6}
+```{r}
 qqnorm(res); qqline(res)
 ```
 
 By looking at the figure above, we can clearly see that the data does not follow a straight line and so it is not of normal distribution
+
+\pagebreak
+
 ### Exercise 7
-```{r, echo=FALSE}
+
+**Point 1**
+
+```{r}
 dogs = read.csv(file = "dogs.txt", header = TRUE, sep = " ")
 attach(dogs)
-```
-
-**point 1**
-```{r, echo=FALSE}
-boxplot(data)
+boxplot(dogs)
 testnorm_isofluorane = rnorm(length(isofluorane))
 testnorm_halothane = rnorm(length(halothane))
 testnorm_cyclopropane = rnorm(length(cyclopropane))
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 ```
+
 In order to test whether the data is normal or not, we draw two QQ-plots against the normal distribution. One of the plots is the original data, say Cyclopropane, while the other plot is normal generated data based on the length of the original data.
+
 *Isofluorane*
-```{r, fig.height=6}
-qqnorm(isofluorane, main="Original Isofluorane data"); qqline(isofluorane)
-qqnorm(testnorm_isofluorane, main="Generated Isofluorane data"); qqline(testnorm_isofluorane)
+
+```{r, fig.height=4}
+qqnorm(isofluorane, main = "Original Isofluorane data")
+qqline(isofluorane)
+qqnorm(testnorm_isofluorane, main = "Generated Isofluorane data")
+qqline(testnorm_isofluorane)
 ```
+
 By looking at the plots side-by-side it is clear that the Isofluorane sample data was not taken from a normal population.
 
 *Halothane*
-```{r, fig.height=FALSE}
-qqnorm(halothane, main="Original Halothane data"); qqline(halothane)
-qqnorm(testnorm_halothane, main="Generated Halothane data"); qqline(testnorm_halothane)
+
+```{r, fig.height=4}
+qqnorm(halothane, main = "Original Halothane data")
+qqline(halothane)
+qqnorm(testnorm_halothane, main = "Generated Halothane data")
+qqline(testnorm_halothane)
 ```
 
 By looking at the plots side-by-side it is clear that the Halothane sample data was taken from a normal population.
 
 *Cyclopropane*
-```{r, fig.height=6}
-qqnorm(cyclopropane, main="Original Cyclopropane data"); qqline(cyclopropane)
-qqnorm(testnorm_cyclopropane, main="Generated Cyclopropane data"); qqline(testnorm_cyclopropane)
+```{r, fig.height=4}
+qqnorm(cyclopropane, main = "Original Cyclopropane data")
+qqline(cyclopropane)
+qqnorm(testnorm_cyclopropane, main = "Generated Cyclopropane data")
+qqline(testnorm_cyclopropane)
 ```
 
 By looking at the plots side-by-side it is clear that the Cyclopropane sample data was taken from a normal population.
 
-**point 2**
+**Point 2**
+
 In order to test whether there is a difference in concentrations between the three drugs, we performed permutation tests. 
 
-```{r, echo=FALSE}
-mystat = function (x, y) { mean(x - y) }
-B = 1000
-```
 *Isofluorane vs Halothane*
+
 ```{r}
+mystat = function (x, y) {
+  mean(x - y)
+}
+B = 1000
+
 tstar = numeric(B)
 
 for (i in 1:B) {
   constar = t(apply(cbind(isofluorane, halothane), 1, sample))
-  tstar[i] = mystat(constar[,1], constar[,2])
+  tstar[i] = mystat(constar[, 1], constar[, 2])
 }
 myt1 = mystat(isofluorane, halothane)
 
@@ -521,6 +573,7 @@ p
 The p-value returned is greater than 0.05 ( > 0.05), therefore we accept the null hypothesis that there is no difference in concentrations between Isofluorane and Halothane.
 
 *Cyclopropane vs Halotahne*
+
 ```{r}
 tstar = numeric(B)
 
@@ -539,6 +592,7 @@ p
 The p-value returned is greater than 0.05 ( > 0.05), therefore we accept the null hypothesis that there is no difference in concentration between Cyclopropane and Halothane.
 
 *Isofluorane vs Cylcopropane*
+
 ```{r}
 tstar = numeric(B)
 
@@ -558,28 +612,37 @@ p
 The p-value returned is lessr than 0.05 ( < 0.05), therefore we reject the null hypothesis that there is no difference in concentration between Cyclopropane and Isofluorane.
 
 The following are the estimated concentrations:
+
 *Isofluorance*
+
 ```{r}
 mean(isofluorane)
 ```
+
 *Halothane*
+
 ```{r}
-mean(Halothane)
+mean(halothane)
 ```
+
 *Cyclopropane*
+
 ```{r}
 mean(cyclopropane)
 ```
 
-**point 3**
+**Point 3**
+
 ```{r}
-dogframe = data.frame(drugs = as.vector(as.matrix(dogs)), groups = as.factor(rep(1:3, each = 10)))
+dogframe = data.frame(drugs = as.vector(as.matrix(dogs)),
+                      groups = as.factor(rep(1:3, each = 10)))
 attach(dogframe)
 ```
+
 Below we perform the Kruskal-Wallis test for the same null hypothesis. Looking at the results, we can also see that the p-value is greater than 0.05 ( > 0.05) and therefore we accept the null hypothesis that they all have the same amount of conenctrations.
+
 ```{r}
 kruskal.test(drugs, groups)
 ```
 
-This result contradicts (to a certain extent) our results from the second part of this exercise. Previously we saw that Isofluorane and Halothane, and Cyclopropane and Halothane have the same concentration levels however Isofluorane and Cyclopropane do not. The reason for this could be that the kruskal tests wether all three groups are from the same population or not, while the t-test only tests 2, so 2 populations can be the same, but different from the third. The two results are compatible with each other, 3 populations are not the same, 2 of the 3 are the same, but not the third (cyclopropane)
-\pagebreak
+This result contradicts (to a certain extent) our results from the second part of this exercise. Previously we saw that Isofluorane and Halothane, and Cyclopropane and Halothane have the same concentration levels however Isofluorane and Cyclopropane do not. The reason for this could be that the kruskal tests wether all three groups are from the same population or not, while the t-test only tests 2, so 2 populations can be the same, but different from the third. The two results are compatible with each other, 3 populations are not the same, 2 of the 3 are the same, but not the third (cyclopropane).

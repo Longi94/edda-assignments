@@ -33,8 +33,7 @@ tstar = numeric(B)
 n = length(data)
 ```
 
-After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
-Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
+For the bootstrap test we ran the test for a set of lambda values (from 0.01 to 0.1 with an increment of 0.005) and then stored the p-values in an array (which is the same size as the array which holds the lambda values) so that we can find the lambda values for which the data stems from an exponential distribution.
 
 The bootstrap test was conducted in the following way:
 
@@ -54,14 +53,14 @@ for (j in seqconst) {
 
 seqconst[parr > 0.05]
 ```
-
+The values printed from seqconst[parr>0.05] gives us the lambda values from which the data stems from the exponential distribution.
 **Point 2**
 
 ```{r, fig}
 hist(data)
 ```
 
-Looking at the histogram we can see that most people either spend too little or spned a lot. Therfore, marketing managers should try to get the people that spend to little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
+Looking at the histogram we can see that most people either spend too little or spend a lot. Therfore, marketing managers should try to get the people that spend too little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
 
 \pagebreak
 
@@ -453,7 +452,7 @@ t.test(energy_d_before, energy_d_after, paired = TRUE)
 
 **Point 3**
 
-The difference in speed per pupil was calculated an a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis.
+The difference in speed per pupil was calculated and a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis which stated that there was no difference before or after consuming any beverage.
 
 The ANOVA test was performed in the following way:
 

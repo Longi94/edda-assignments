@@ -457,5 +457,128 @@ qqnorm(res); qqline(res)
 
 By looking at the figure above, we can clearly see that the data does not follow a straight line and so it is not of normal distribution
 ### Exercise 7
+```{r, echo=FALSE}
+dogs = read.csv(file = "dogs.txt", header = TRUE, sep = " ")
+attach(dogs)
+```
 
+**point 1**
+```{r, echo=FALSE}
+boxplot(data)
+testnorm_isofluorane = rnorm(length(isofluorane))
+testnorm_halothane = rnorm(length(halothane))
+testnorm_cyclopropane = rnorm(length(cyclopropane))
+par(mfrow=c(1,2))
+```
+In order to test whether the data is normal or not, we draw two QQ-plots against the normal distribution. One of the plots is the original data, say Cyclopropane, while the other plot is normal generated data based on the length of the original data.
+*Isofluorane*
+```{r, fig.height=6}
+qqnorm(isofluorane, main="Original Isofluorane data"); qqline(isofluorane)
+qqnorm(testnorm_isofluorane, main="Generated Isofluorane data"); qqline(testnorm_isofluorane)
+```
+By looking at the plots side-by-side it is clear that the Isofluorane sample data was not taken from a normal population.
+
+*Halothane*
+```{r, fig.height=FALSE}
+qqnorm(halothane, main="Original Halothane data"); qqline(halothane)
+qqnorm(testnorm_halothane, main="Generated Halothane data"); qqline(testnorm_halothane)
+```
+
+By looking at the plots side-by-side it is clear that the Halothane sample data was taken from a normal population.
+
+*Cyclopropane*
+```{r, fig.height=6}
+qqnorm(cyclopropane, main="Original Cyclopropane data"); qqline(cyclopropane)
+qqnorm(testnorm_cyclopropane, main="Generated Cyclopropane data"); qqline(testnorm_cyclopropane)
+```
+
+By looking at the plots side-by-side it is clear that the Cyclopropane sample data was taken from a normal population.
+
+**point 2**
+In order to test whether there is a difference in concentrations between the three drugs, we performed permutation tests. 
+
+```{r, echo=FALSE}
+mystat = function (x, y) { mean(x - y) }
+B = 1000
+```
+*Isofluorane vs Halothane*
+```{r}
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(isofluorane, halothane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt1 = mystat(isofluorane, halothane)
+
+pl1 = sum(tstar < myt1) / B
+pr1 = sum(tstar > myt1) / B
+p = 2 * min(pl1, pr1)
+p 
+```
+
+The p-value returned is greater than 0.05 ( > 0.05), therefore we accept the null hypothesis that there is no difference in concentrations between Isofluorane and Halothane.
+
+*Cyclopropane vs Halotahne*
+```{r}
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(cyclopropane, halothane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt2 = mystat(cyclopropane, halothane)
+
+pl2 = sum(tstar < myt2) / B
+pr2 = sum(tstar > myt2) / B
+p = 2 * min(pl2, pr2)
+p
+```
+
+The p-value returned is greater than 0.05 ( > 0.05), therefore we accept the null hypothesis that there is no difference in concentration between Cyclopropane and Halothane.
+
+*Isofluorane vs Cylcopropane*
+```{r}
+tstar = numeric(B)
+
+for (i in 1:B) {
+  constar = t(apply(cbind(isofluorane, cyclopropane), 1, sample))
+  tstar[i] = mystat(constar[,1], constar[,2])
+}
+myt3 = mystat(isofluorane, cyclopropane)
+
+hist(tstar)
+pl3 = sum(tstar < myt3) / B
+pr3 = sum(tstar > myt3) / B
+p = 2 * min(pl3, pr3)
+p
+```
+
+The p-value returned is lessr than 0.05 ( < 0.05), therefore we reject the null hypothesis that there is no difference in concentration between Cyclopropane and Isofluorane.
+
+The following are the estimated concentrations:
+*Isofluorance*
+```{r}
+mean(isofluorane)
+```
+*Halothane*
+```{r}
+mean(Halothane)
+```
+*Cyclopropane*
+```{r}
+mean(cyclopropane)
+```
+
+**point 3**
+```{r}
+dogframe = data.frame(drugs = as.vector(as.matrix(dogs)), groups = as.factor(rep(1:3, each = 10)))
+attach(dogframe)
+```
+Below we perform the Kruskal-Wallis test for the same null hypothesis. Looking at the results, we can also see that the p-value is greater than 0.05 ( > 0.05) and therefore we accept the null hypothesis that they all have the same amount of conenctrations.
+```{r}
+kruskal.test(drugs, groups)
+```
+
+This result contradicts (to a certain extent) our results from the second part of this exercise. Previously we saw that Isofluorane and Halothane, and Cyclopropane and Halothane have the same concentration levels however Isofluorane and Cyclopropane do not. The reason for this could be that the kruskal tests wether all three groups are from the same population or not, while the t-test only tests 2, so 2 populations can be the same, but different from the third. The two results are compatible with each other, 3 populations are not the same, 2 of the 3 are the same, but not the third (cyclopropane)
 \pagebreak

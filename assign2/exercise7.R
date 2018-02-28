@@ -1,13 +1,24 @@
+par(mfrow=c(1,2))
 dogs = read.csv(file = "dogs.txt", header = TRUE, sep = " ")
 
 attach(dogs)
 
 # 1.
-boxplot(dogs)
 
-qqnorm(isofluorane)
-qqnorm(halothane)
-qqnorm(cyclopropane)
+testnorm_isofluorane = rnorm(length(isofluorane))
+testnorm_halothane = rnorm(length(halothane))
+testnorm_cyclopropane = rnorm(length(cyclopropane))
+
+qqnorm(isofluorane, main="Original Isofluorane data"); qqline(isofluorane)
+qqnorm(testnorm_isofluorane, main="Generated Isofluorane data"); qqline(testnorm_isofluorane)
+
+qqnorm(halothane, main="Original Halothane data"); qqline(halothane)
+qqnorm(testnorm_halothane, main="Generated Halothane data"); qqline(testnorm_halothane)
+
+qqnorm(cyclopropane, main="Original Cyclopropane data"); qqline(cyclopropane)
+qqnorm(testnorm_cyclopropane, main="Generated Cyclopropane data"); qqline(testnorm_cyclopropane)
+
+boxplot(dogs)
 
 # Seems reasonable for the last one, second one is questionable, first is not a normal population
 
@@ -69,8 +80,8 @@ mean(cyclopropane) # 0.853
 # 3.
 dogframe = data.frame(drugs = as.vector(as.matrix(dogs)), groups = as.factor(rep(1:3, each = 10)))
 attach(dogframe)
-kruskal.test(drugs, groups)
-
+test= kruskal.test(drugs, groups)
+summary(test)
 # > kruskal.test(drugs, groups)
 # 
 # Kruskal-Wallis rank sum test

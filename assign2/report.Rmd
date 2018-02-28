@@ -30,8 +30,7 @@ tstar = numeric(B)
 n = length(data)
 ```
 
-After conducting the bootstrap test and analyzing the P value we can conclude that the distribution does not stem from the exponential distribution.
-Furthermore, the histogram has a bell-shaped curve rather than an exponential curve.
+A bootstrap test was conducted for a set of lambda values, and then each p-value was stored so that we can analyze if the data for one or more of the lambda values stems from the exponential distribution.
 
 The bootstrap test was conducted in the following way:
 ```{r, echo=FALSE, fig.height=6}
@@ -51,11 +50,13 @@ for(j in seqconst){
 
 seqconst[parr>0.05]
 ```
+
+The values printed from seqconst[parr>0.05] gives us the lambda values from which the data stems from the exponential distribution.
 **point 2**
 ```{r, fig.height=6}
 hist(data)
 ```
-Looking at the histogram we can see that most people either spend too little or spned a lot. Therfore, marketing managers should try to get the people that spend to little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
+Looking at the histogram we can see that most people either spend too little or spend a lot. Therfore, marketing managers should try to get the people that spend too little to spend more, since the highest frequency is between 0-10 dollars. This could be done by having some sort of package which might seem attractive to them and also get them to spend more. Also, another package could be created for those who spend more, since there is also a significant amount of people who spend between 70-120 dollars.
 
 \pagebreak
 
@@ -407,7 +408,7 @@ hist(before, freq=FALSE); lines(density(before), col="red",lwd=2)
 hist(after, freq=FALSE); lines(density(after), col="red", lwd=2) 
 ```
 **point 2**
-After conducting the appropriate t-tests, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
+After conducting the appropriate t-tests and looking at their p-values, we can conclude that there is no difference in speed after drinking both the soft drinks and energy drinks
 
 ```{r}
 #Q2
@@ -419,7 +420,7 @@ t.test(energy_d_before, energy_d_after, paired=TRUE)
 ```
 
 **point 3**
-The difference in speed per pupil was calculated an a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis.
+The difference in speed per pupil was calculated and a 1-way ANOVA test was performed. The p value returned from the anova and summary are smaller than 0.05 and so we reject the null hypothesis which stated that there was no difference before or after consuming any beverage
 
 The ANOVA test was performed in the following way:
 ```{r}
@@ -439,7 +440,7 @@ diffarr = numeric(length(before))
 There would be no need for the softdrinks, which would give us a bigger sample size for energy drinks.
 
 **point 5**
-Yes the objection is similar as the participants should not have been split, but rather all of them should have drank the energy drink and then drank the soft drink and ran, so that you can compare time differences for the same person since different people might simply have different running speed.
+Yes the objection is similar as the participants should not have been split, but rather all of them should have drank the energy drink and then drank the soft drink and ran, so that you can compare time differences for the same person since different people might simply have a different running speed.
 Furthermore, maybe the initial run (without drinking energy drinks or softdrinks) could have been removed since this would mean that the participants might be too tired for the 3rd run.
 \pagebreak
 

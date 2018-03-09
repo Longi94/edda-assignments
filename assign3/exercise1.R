@@ -50,3 +50,4 @@ qqline(residuals(dataaov2))
 #extreme values are outliers
 
 plot(fitted(dataaov2),residuals(dataaov2))
+#no idea wtf is that

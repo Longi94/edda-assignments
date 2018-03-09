@@ -50,6 +50,7 @@ interaction.plot(skill, interface, time)
 ##########################
 
 # we do a 2-way ANOVA (lecture 5)
+# skill has no interaction with search interfaces so we use the additive test
 search$interface = as.factor(interface)
 search$skill = as.factor(skill)
 aovser = lm(time ~ interface + skill, data = search)
@@ -76,6 +77,8 @@ anova(aovser)
 multser = glht(aovser, linfct = mcp(skill = "Tukey"))
 summary(multser)
 # estimate for skill level 4 and interface 3 (4-3) is 2.267
+
+# wait I think this is the standard deviation, are ther results are around 20, im not sure about this one
 
 ##########################
 # 5.

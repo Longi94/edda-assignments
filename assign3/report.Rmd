@@ -44,15 +44,39 @@ library(lme4)
 **Point 7**
 
 ### Exercise 3
-
+```{r}
+data = read.table("cream.txt", header=TRUE)
+data$starter = factor(data$starter)
+data$batch = factor(data$batch)
+data$position = factor(data$position)
+attach(data)
+```
 **Point 1**
-
+A three-way test was performed in the following way:
+```{r}
+model1 = lm(acidity~starter+batch+position,data)
+model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
+data.aov = aov(model2,data)
+summary(data.aov)
+```
+//Not sure what to write about the summary yet.
 **Point 2**
-
+In order to test the hypotheses for all $$H0:\alpha i = \alpha i'$$ on equality of differences of the main effects for starter simultaneously, a multiple comparison test was performed.
+```{r}
+model = lm(acidity~starter+batch+position, data=data)
+startermult = glht(model,linfct=mcp(starter="Tukey"))
+summary(startermult)
+```
+Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$,$$ \alpha 4 = \alpha 2 $$, $$ \alpha 4 = \alpha 3 $$, and $$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05
 **Point 3**
+//Not sure about this part. can't fid P value from point 1 summary that matches alpha2 = alpha1
 
 **Point 4**
-
+In order to find the confidence intervals for testing all differences of the main effect of starter we could use the "startermult" variable from the second question of this exercise. The test was performed in the following way:
+```{r}
+confint(startermult, level=0.95)
+```
+Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.4701,4.4499], [2.3001,5.2799], and [-4.7835,-1.8045] do not contain the number zero.
 ### Exercise 4
 
 **Point 1**

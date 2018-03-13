@@ -176,7 +176,7 @@ The Q-Q plot indicates a normal distribution and the residuals are distributed e
 friedman.test(time, interface, skill)
 ```
 
-We got a p-value of 0.04076 so the null hypothesis that the interface has no effect on the search time can be rejected.
+We got a p-value of **0.04076** so the null hypothesis that the interface has no effect on the search time can be rejected.
 
 **Point 7**
 
@@ -187,7 +187,7 @@ aovinter = lm(time ~ interface, data = search)
 anova(aovinter)
 ```
 
-We got a p-value of 0.09642 so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
+We got a p-value of **0.09642** so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
 
 The ANOVA test assumes normal distribution and we can verify this with a Q-Q plot. THe plot below maybe curving slightly, but base don this plot it is still reasonable to assume normal distribution.
 
@@ -232,13 +232,54 @@ confint(startermult, level=0.95)
 Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.4701,4.4499], [2.3001,5.2799], and [-4.7835,-1.8045] do not contain the number zero.
 ### Exercise 4
 
+```{r}
+cows = read.table("cow.txt", header = TRUE)
+attach(cows)
+```
+
 **Point 1**
+
+We test the null hypothesis with a 1-way ANOVA test.
+
+```{r}
+cowaov = lm(milk ~ treatment)
+anova(cowaov)
+```
+
+We get a p-value of **0.967**5, which means that we cannot reject the null hypothesis.
 
 **Point 2**
 
+We estimate the differnce using a paired two sample t-test.
+
+```{r}
+t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
+```
+
+The resulting mean of differences is **0.244**.
+
 **Point 3**
 
+We use the crossover design to perform the test with mixed effects.
+
+```{r}
+cows$id = factor(id)
+cows$per = factor(per)
+cowslmer = lmer(milk ~ treatment + order + per + (1 | id),
+                data = cows, REML = FALSE)
+cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
+anova(cowslmer1, cowslmer)
+```
+
+Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got int Point 1 but with a different p-value.
+
+TODO EXPLAIN WHY?
+
 **Point 4**
+
+This is the same piece of code we used in Point 2 to calculate the estimate difference between milk productions. The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis.
+
+TODO EXPLAIN WHY?
 
 ### Exercise 5
 

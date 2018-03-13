@@ -38,7 +38,7 @@ summary(cowslmer)
 
 cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
 anova(cowslmer1, cowslmer)
-# p-value 0.446, reject the null hypothesis
+# p-value 0.446, accept the null hypothesis
 # we got different results, why? idk
 
 ##########################

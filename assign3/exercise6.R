@@ -99,3 +99,15 @@ summary(windTempHumilm)
 #for humidity p-value is higher than 0.05 (0.131) - we remove that variable
 windTemplm=lm(oxidant~wind+temperature,data=data)
 summary(windTemplm)
+
+#######################
+# POINT 4
+#######################
+
+# total = -5.20334 +-0.42706*wind - 0.52035*temperature + error
+
+#######################
+# POINT 5
+#######################
+qqnorm(residuals(windTemplm))
+qqline(residuals(windTemplm))

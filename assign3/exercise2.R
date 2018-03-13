@@ -41,7 +41,8 @@ par(mfrow = c(1, 2))
 boxplot(time ~ interface)
 boxplot(time ~ skill)
 
-# interaction plots, I don't know how to read these yet, it asks if any interactions are apparent
+# interaction plots there is a significant interaction between skill and interface
+# http://support.minitab.com/en-us/minitab-express/1/help-and-how-to/modeling-statistics/anova/how-to/interaction-plot/interpret-the-results/
 interaction.plot(interface, skill, time)
 interaction.plot(skill, interface, time)
 
@@ -53,8 +54,8 @@ interaction.plot(skill, interface, time)
 # skill has no interaction with search interfaces so we use the additive test
 search$interface = as.factor(interface)
 search$skill = as.factor(skill)
-aovser = lm(time ~ interface + skill, data = search)
 
+aovser = lm(time ~ interface + skill, data = search)
 anova(aovser)
 
 # the null hypothetsis can be rejected, result:
@@ -73,12 +74,14 @@ anova(aovser)
 # 4.
 ##########################
 
+summary(aovser)
+
 # multiple comparisons (lecture 6, slide 6)
 multser = glht(aovser, linfct = mcp(skill = "Tukey"))
 summary(multser)
 # estimate for skill level 4 and interface 3 (4-3) is 2.267
 
-# wait I think this is the standard deviation, are ther results are around 20, im not sure about this one
+# wait I think this is the standard deviation, all the results are around 20, im not sure about this one
 
 ##########################
 # 5.

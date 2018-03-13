@@ -7,7 +7,7 @@ fontsize: 11pt
 highlight: tango
 ---
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
 library(knitr)
 library(multcomp)
 library(lme4)
@@ -29,19 +29,107 @@ library(lme4)
 
 ### Exercise 2
 
+```{r}
+search = read.table("search.txt", header = TRUE)
+attach(search)
+```
+
 **Point 1**
+
+We can randomly assign each student to an interface using the following code.
+
+```{r}
+B = 5 # 5 user skill levels
+I = 3 # 3 interface types
+
+blocks = matrix(0, B, I)
+
+for (i in 1:B) {
+  blocks[i, ] = sample(((i - 1) * I + 1):(i * I))
+}
+
+kable(x = blocks, caption = "Randomization of students to interfaces")
+```
+
+The numbers in the table are the numbers assigned to each student and each row represents the type of student. The first row contains the student with skill level 1, the second row with skill level 2 and so on. In each row the first student will be assigned to interface 1, the second to interface 2 and the third to interface 3.
 
 **Point 2**
 
+We plot boxplots and interaction graphs.
+
+```{r}
+par(mfrow = c(1, 2))
+
+boxplot(time ~ interface)
+boxplot(time ~ skill)
+
+interaction.plot(interface, skill, time)
+interaction.plot(skill, interface, time)
+```
+
+On the first interaction graph a lot of lines are parallel, whil one the second one a lot of lies are nonparallel. We observe more parallel lines than nonparallel ones so we can conclude that there is no significatnt interaction between skill and interface.
+
 **Point 3**
+
+Since the levels of the factors are coded in numbers, we convert them to factors first.
+
+```{r}
+search$interface = as.factor(interface)
+search$skill = as.factor(skill)
+```
+
+We do a 2-way ANOVA test to test the null hypothesis that the search time is the same for all three interfaces. Since in Point 2 we concluded that there are no interaction between skill and interface we do the test on the additive model.
+
+```{r}
+aovser = lm(time ~ interface + skill, data = search)
+anova(aovser)
+```
+
+Both p-values are lower than 0.05, which means that both factors have a significant affect on the model and the null hypothesis can be rejected. The search time is not the same for all interfaces.
 
 **Point 4**
 
+```{r}
+multser = glht(aovser, linfct = mcp(skill = "Tukey"))
+summary(multser)
+```
+
 **Point 5**
+
+```{r}
+par(mfrow = c(1, 2))
+qqnorm(residuals(aovser))
+qqline(residuals(aovser))
+plot(fitted(aovser), residuals(aovser))
+```
+
+The Q-Q plot indicates a normal distribution and the residuals are distributed evenly. The ANOVA test assumed a normal distribution so these diagnostic plots back the results of the test.
 
 **Point 6**
 
+```{r}
+friedman.test(time, interface, skill)
+```
+
+We got a p-value of 0.04076 so the null hypothesis that the interface has no effect on the search time can be rejected.
+
 **Point 7**
+
+We do a 1-way ANOVA test.
+
+```{r}
+aovinter = lm(time ~ interface, data = search)
+anova(aovinter)
+```
+
+We got a p-value of 0.09642 so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
+
+The ANOVA test assumes normal distribution and we can verify this with a Q-Q plot. THe plot below maybe curving slightly, but base don this plot it is still reasonable to assume normal distribution.
+
+```{r}
+qqnorm(residuals(aovinter))
+qqline(residuals(aovinter))
+```
 
 ### Exercise 3
 ```{r}

@@ -178,7 +178,7 @@ The Q-Q plot indicates a normal distribution and the residuals are distributed e
 friedman.test(time, interface, skill)
 ```
 
-We got a p-value of 0.04076 so the null hypothesis that the interface has no effect on the search time can be rejected.
+We got a p-value of **0.04076** so the null hypothesis that the interface has no effect on the search time can be rejected.
 
 **Point 7**
 
@@ -189,7 +189,7 @@ aovinter = lm(time ~ interface, data = search)
 anova(aovinter)
 ```
 
-We got a p-value of 0.09642 so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
+We got a p-value of **0.09642** so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
 
 The ANOVA test assumes normal distribution and we can verify this with a Q-Q plot. THe plot below maybe curving slightly, but base don this plot it is still reasonable to assume normal distribution.
 
@@ -206,7 +206,11 @@ data$batch = factor(data$batch)
 data$position = factor(data$position)
 attach(data)
 ```
+
+
 **Point 1**
+
+
 A three-way test was performed in the following way:
 ```{r}
 model1 = lm(acidity~starter+batch+position,data)
@@ -214,43 +218,185 @@ model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
 data.aov = aov(model2,data)
 summary(data.aov)
 ```
+
+
 //Not sure what to write about the summary yet.
 **Point 2**
+
+
 In order to test the hypotheses for all $$H0:\alpha i = \alpha i'$$ on equality of differences of the main effects for starter simultaneously, a multiple comparison test was performed.
+
+
 ```{r}
 model = lm(acidity~starter+batch+position, data=data)
 startermult = glht(model,linfct=mcp(starter="Tukey"))
 summary(startermult)
 ```
+
+
 Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$,$$ \alpha 4 = \alpha 2 $$, $$ \alpha 4 = \alpha 3 $$, and $$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05
+
+
 **Point 3**
 //Not sure about this part. can't fid P value from point 1 summary that matches alpha2 = alpha1
 
 **Point 4**
 In order to find the confidence intervals for testing all differences of the main effect of starter we could use the "startermult" variable from the second question of this exercise. The test was performed in the following way:
+
+
 ```{r}
 confint(startermult, level=0.95)
 ```
 Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.4701,4.4499], [2.3001,5.2799], and [-4.7835,-1.8045] do not contain the number zero.
+
+
 ### Exercise 4
+
+```{r}
+cows = read.table("cow.txt", header = TRUE)
+attach(cows)
+```
 
 **Point 1**
 
+We test the null hypothesis with a 1-way ANOVA test.
+
+```{r}
+cowaov = lm(milk ~ treatment)
+anova(cowaov)
+```
+
+We get a p-value of **0.967**5, which means that we cannot reject the null hypothesis.
+
 **Point 2**
+
+We estimate the differnce using a paired two sample t-test.
+
+```{r}
+t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
+```
+
+The resulting mean of differences is **0.244**.
 
 **Point 3**
 
+We use the crossover design to perform the test with mixed effects.
+
+```{r}
+cows$id = factor(id)
+cows$per = factor(per)
+cowslmer = lmer(milk ~ treatment + order + per + (1 | id),
+                data = cows, REML = FALSE)
+cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
+anova(cowslmer1, cowslmer)
+```
+
+Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got int Point 1 but with a different p-value.
+
+TODO EXPLAIN WHY?
+
 **Point 4**
+
+This is the same piece of code we used in Point 2 to calculate the estimate difference between milk productions. The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis.
+
+TODO EXPLAIN WHY?
 
 ### Exercise 5
 
+
+```{r}
+data = read.table("nauseatable.txt", header=TRUE)
+attach(data)
+
+chlorpromazine_no_nausea = data[1,1]
+chlorpromazine_nausea = data[1,2]
+pentobarbital_100mg_no_nausea = data[2,1]
+pentobarbital_100mg_nausea = data[2,2]
+pentobarbital_150mg_no_nausea = data[3,1]
+pentobarbital_150mg_nausea = data[3,2]
+```
+
+
 **Point 1**
+
+
+The data given is re-arranged and the result is a dataframe which contains 304 rows and two columns. One column showing whether the patient suffered nausea and the other column showing which type of medicine was used. The data was re-arranged in the following way:
+
+
+```{r}
+nausea = c()
+medicine = c()
+
+for(i in 1:304){
+  if(i <= 100){
+    nausea[i] = 0
+    medicine[i] = "chlorpromazine"
+  }else if(i > 100 && i <= 152){
+    nausea[i] = 1
+    medicine[i] = "chlorpromazine"
+  }else if(i > 152 && i <= 184){
+    nausea[i] = 0
+    medicine[i] = "pentobarbital 100mg"
+  }else if(i > 184 && i <= 219){
+    nausea[i] = 1
+    medicine[i] = "pentobarbital 100mg"
+  }else if(i > 219 && i <= 267){
+    nausea[i]=0
+    medicine[i] = "pentobarbital 150mg"
+  }else if(i > 267 && i <= 304){
+    nausea[i] = 1
+    medicine[i] = "pentobarbital 150mg"
+  }
+}
+
+nausea.frame = data.frame(nausea,medicine)
+```
+
 
 **Point 2**
 
+
+Running the following code a contingency table is created and we can see that the values for nausea and medicine match the original data table. 
+
+
+```{r}
+xtabs(~medicine+nausea)
+```
+
 **Point 3**
 
+In order to test whether the different medications work equally against nausea a permutation test was performed.
+
+
+```{r}
+attach(nausea.frame)
+
+B=1000
+tstar=numeric(B)
+for(i in 1:B){
+  treatstar=sample(medicine)
+  tstar[i] = chisq.test(xtabs(~treatstar+nausea))[[1]]
+}
+
+myt=chisq.test(xtabs(~medicine+nausea))[[1]]
+
+pl=sum(tstar<myt)/B
+pr=sum(tstar>myt)/B
+pl
+```
+
+Looking at the value 'pl' we can see that it is > 0.05, therefore we accept the null hypothesis that the different medicines work equally against nausea.
+
+
+
 **Point 4**
+
+
+```{r}
+pl;chisq.test(xtabs(~nausea+medicine))[[3]]
+```
+
+Looking at the p-value from the permutation test and from the chisquare test, we can clearly see that they are different. The Chi-squared test tests for the level of independence. The variable "myt" is based on the original values of medicine and nausea, while in the permutation test we change the sample for medicine in each iteration. This could be the reason for the difference in P-values.
 
 ### Exercise 6
 
@@ -439,3 +585,110 @@ qqline(residuals(windTemplm))
 Residuals represent normal distribution. We can assume that linear regression model was useful in that exercise.
 
 ### Exercise 7
+
+```{r, echo = FALSE}
+expensescrime = read.csv(file = "expensescrime.txt", header = TRUE, sep = " ")
+attach(expensescrime)
+```
+
+**Step up**
+
+First we use the step-up method to build a model that explains the `expend` parameter.
+
+```{r}
+summary(lm(expend ~ bad, data = expensescrime))
+summary(lm(expend ~ crime, data = expensescrime))
+summary(lm(expend ~ lawyers, data = expensescrime))
+summary(lm(expend ~ employ, data = expensescrime))
+summary(lm(expend ~ pop, data = expensescrime))
+```
+
+The `employ` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + bad, data = expensescrime))
+summary(lm(expend ~ employ + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+summary(lm(expend ~ employ + pop, data = expensescrime))
+```
+
+The `lawyer` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + pop, data = expensescrime))
+```
+
+All of the p-values are now higher than 0.05 so the rest of the variables do not have a significant impact on tht `expend` variable. The resulting model is following.
+
+$$ expend = -1.107e2 + 2.686e{-2} * lawyers + 2.971e{-2} * employ + error $$
+
+**Step down**
+
+We build a model using the step down method as well to make sure that we get the best model possible that describes the `expend` variable.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + crime + pop, data = expensescrime))
+```
+
+The `crime` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + pop, data = expensescrime))
+```
+
+The `pop` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+```
+
+The `bad` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+```
+
+All the p-values are now significant so we stop the step down loop. We got the same model as the one we got with the step up model.
+
+```{r}
+expendlm = lm(expend ~ employ + lawyers, data = expensescrime)
+```
+
+**Influence points**
+
+To investigate the influence points we calculate the Cook's distances.
+
+```{r}
+round(cooks.distance(expendlm), 2)
+```
+
+All the distances are below 1 so there are no influence points.
+
+**Collinearity**
+
+To check for collinearity we draw scatter plots between the variables.
+
+```{r}
+pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
+```
+
+The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
+
+```{r}
+round(cor(expensescrime[,2:7]), 2)
+```
+
+**Residuals**
+
+To investigate the residuals we draw a Q-Q plot and a scatter plot.
+
+```{r}
+par(mfrow = c(1, 2))
+qqnorm(residuals(expendlm))
+qqline(residuals(expendlm))
+plot(fitted(expendlm), residuals(expendlm))
+```
+
+According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values.

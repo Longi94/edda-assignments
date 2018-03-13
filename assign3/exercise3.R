@@ -4,26 +4,25 @@ library(lme4)
 #tests should be correct, but I'm not really sure on what the results mean. Will read notes and try to analyze them.
 
 data = read.table("cream.txt", header=TRUE)
-attach(data)
-
 data$starter = factor(data$starter)
 data$batch = factor(data$batch)
 data$position = factor(data$position)
-
-
+attach(data)
 
 #Exercise 1
-threewaytest = aov(acidity~starter+batch+position, data=data)
-summary(threewaytest)
-
+model1 = lm(acidity~starter+batch+position,data)
+model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
+data.aov = aov(model2,data)
+summary(data.aov)
 
 #Exercise 2
-dataaov = lm(acidity~starter+batch+position, data=data)
-startermult = glht(dataaov,linfct=mcp(starter="Tukey"))
+model = lm(acidity~starter+batch+position, data=data)
+startermult = glht(model,linfct=mcp(starter="Tukey"))
 summary(startermult)
-#still need to interpret results
+
 
 #Exercise 3
+
 
 #Exercise 4
 confint(startermult, level=0.95)

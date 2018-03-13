@@ -139,7 +139,11 @@ data$batch = factor(data$batch)
 data$position = factor(data$position)
 attach(data)
 ```
+
+
 **Point 1**
+
+
 A three-way test was performed in the following way:
 ```{r}
 model1 = lm(acidity~starter+batch+position,data)
@@ -147,24 +151,38 @@ model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
 data.aov = aov(model2,data)
 summary(data.aov)
 ```
+
+
 //Not sure what to write about the summary yet.
 **Point 2**
+
+
 In order to test the hypotheses for all $$H0:\alpha i = \alpha i'$$ on equality of differences of the main effects for starter simultaneously, a multiple comparison test was performed.
+
+
 ```{r}
 model = lm(acidity~starter+batch+position, data=data)
 startermult = glht(model,linfct=mcp(starter="Tukey"))
 summary(startermult)
 ```
+
+
 Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$,$$ \alpha 4 = \alpha 2 $$, $$ \alpha 4 = \alpha 3 $$, and $$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05
+
+
 **Point 3**
 //Not sure about this part. can't fid P value from point 1 summary that matches alpha2 = alpha1
 
 **Point 4**
 In order to find the confidence intervals for testing all differences of the main effect of starter we could use the "startermult" variable from the second question of this exercise. The test was performed in the following way:
+
+
 ```{r}
 confint(startermult, level=0.95)
 ```
 Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.4701,4.4499], [2.3001,5.2799], and [-4.7835,-1.8045] do not contain the number zero.
+
+
 ### Exercise 4
 
 **Point 1**
@@ -177,13 +195,100 @@ Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.47
 
 ### Exercise 5
 
+
+```{r}
+data = read.table("nauseatable.txt", header=TRUE)
+attach(data)
+
+chlorpromazine_no_nausea = data[1,1]
+chlorpromazine_nausea = data[1,2]
+pentobarbital_100mg_no_nausea = data[2,1]
+pentobarbital_100mg_nausea = data[2,2]
+pentobarbital_150mg_no_nausea = data[3,1]
+pentobarbital_150mg_nausea = data[3,2]
+```
+
+
 **Point 1**
+
+
+The data given is re-arranged and the result is a dataframe which contains 304 rows and two columns. One column showing whether the patient suffered nausea and the other column showing which type of medicine was used. The data was re-arranged in the following way:
+
+
+```{r}
+nausea = c()
+medicine = c()
+
+for(i in 1:304){
+  if(i <= 100){
+    nausea[i] = 0
+    medicine[i] = "chlorpromazine"
+  }else if(i > 100 && i <= 152){
+    nausea[i] = 1
+    medicine[i] = "chlorpromazine"
+  }else if(i > 152 && i <= 184){
+    nausea[i] = 0
+    medicine[i] = "pentobarbital 100mg"
+  }else if(i > 184 && i <= 219){
+    nausea[i] = 1
+    medicine[i] = "pentobarbital 100mg"
+  }else if(i > 219 && i <= 267){
+    nausea[i]=0
+    medicine[i] = "pentobarbital 150mg"
+  }else if(i > 267 && i <= 304){
+    nausea[i] = 1
+    medicine[i] = "pentobarbital 150mg"
+  }
+}
+
+nausea.frame = data.frame(nausea,medicine)
+```
+
 
 **Point 2**
 
+
+Running the following code a contingency table is created and we can see that the values for nausea and medicine match the original data table. 
+
+
+```{r}
+xtabs(~medicine+nausea)
+```
+
 **Point 3**
 
+In order to test whether the different medications work equally against nausea a permutation test was performed.
+
+
+```{r}
+attach(nausea.frame)
+
+B=1000
+tstar=numeric(B)
+for(i in 1:B){
+  treatstar=sample(medicine)
+  tstar[i] = chisq.test(xtabs(~treatstar+nausea))[[1]]
+}
+
+myt=chisq.test(xtabs(~medicine+nausea))[[1]]
+
+pl=sum(tstar<myt)/B
+pr=sum(tstar>myt)/B
+pl
+```
+
+Looking at the value 'pl' we can see that it is > 0.05, therefore we accept the null hypothesis that the different medicines work equally against nausea.
+
+
+
 **Point 4**
+
+
+```{r}
+pl;chisq.test(xtabs(~nausea+medicine))[[3]]
+```
+
+Looking at the p-value from the permutation test and from the chisquare test, we can clearly see that they are different. The Chi-squared test tests for the level of independence. The variable "myt" is based on the original values of medicine and nausea, while in the permutation test we change the sample for medicine in each iteration. This could be the reason for the difference in P-values.
 
 ### Exercise 6
 

@@ -42,6 +42,8 @@ As a result we obtained 18 experimental units (18 slices of bread) with assigned
 ```{r, echo = FALSE}
 boxplot(hours~environment,data=data)
 ```
+
+
 ```{r, echo = FALSE}
 boxplot(hours~humidity,data=data)
 ```
@@ -266,10 +268,174 @@ In scatter plots we can see some factors that are highly correlated with oxidant
 
 **Point 2**
 
+*STEP 1*
+
+We are setting a simple linear regression model for each of explanatory variable.
+
+*Wind:*
+```{r}
+windlm=lm(oxidant~wind,data=data)
+summary(windlm)
+plot(oxidant~wind, data=data)
+abline(windlm)
+```
+
+For *wind* variable we received R^2 equal to 0.5863 and p-value 8.20e-07.
+
+The slope of plot is negative. We can assume significant correlation between wind and oxidant.
+
+
+*Temperature:*
+```{r}
+templm=lm(oxidant~temperature,data=data)
+summary(templm)
+plot(oxidant~temperature, data=data)
+abline(templm)
+```
+
+For *temperature* variable we received R^2 equal to 0.576 and p-value XXXX.
+
+The slope of plot is positive. We can assume significant correlation between temperature and oxidant.
+
+
+*Humidity:*
+```{r}
+humilm=lm(oxidant~humidity,data=data)
+summary(humilm)
+plot(oxidant~humidity, data=data)
+abline(humilm)
+```
+
+For *humidity* variable we received R^2 equal to 0.124 and p-value XXXX.
+
+Low R^2 and high p-value (>0.05) signify that there in no significant correlation between humidity and oxidant. What's more, there is no clear linear relation between X  and Y
+
+
+*Insolation:*
+```{r}
+insolm=lm(oxidant~insolation,data=data)
+summary(insolm)
+plot(oxidant~insolation, data=data)
+abline(insolm)
+```
+
+For *insolation* variable we received R^2 equal to 0.0.22993 and p-value XXXX.
+
+The slope of plot is positive. The correlation between insolation and oxidant is not so significant as we can see outlying points in X and no clear linear relation between X an Y.
+
+
+*Result*
+
+Considering all received R^2 values, for further processing, we should select *wind* for an explanatory variable X_j as it has the highest value of that coefficient.
+
+
+*STEP 2*
+
+Now, we are going to extend our current model (oxidant~wind) by another explanatory variable.
+
+
+*Temperature*
+```{r}
+windTemplm=lm(oxidant~wind+temperature,data=data)
+summary(windTemplm)
+```
+After extending our current model by *temperature* variable, R^2 value increased to 0,7773.
+
+*Humidity*
+```{r}
+windHumilm=lm(oxidant~wind+humidity,data=data)
+summary(windHumilm)
+```
+After extending our current model by *humidity* variable, R^2 value insignificantly increased to 0,5913.
+
+*Insolation*
+```{r}
+windInsolm=lm(oxidant~wind+insolation,data=data)
+summary(windInsolm)
+```
+After extending our current model by *insolation* variable, R^2 value increased to 0,6613.
+
+
+*Result*
+
+For further processing we should extend our model by *temperature* variable as this variable caused the biggest increase in R^2 value.
+
+
+*STEP 3*
+
+In this step we proceed with extending our current model (oxidant~wind+temperature - R^2 = 0,7773).
+
+
+*Humidity*
+```{r}
+windTempHumilm=lm(oxidant~wind+temperature+humidity,data=data)
+summary(windTempHumilm)
+```
+After extending our current model by *humidity* variable, R^2 value increased to 0,7964.
+
+*Insolation*
+```{r}
+windTempInslm=lm(oxidant~wind+temperature+insolation,data=data)
+summary(windTempInslm)
+```
+After extending our current model by *insolation* variable, R^2 value increased to 0,7816.
+
+Neither *humidity* nor *insolation* increased significaly R^2 value.
+In such a situation we should stop extending our model and assume that model from previous step is sufficient (oxidant~wind+tempreature).
+
+Resulting linear regression model: 
+
+$$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
+
 **Point 3**
+
+All variables included in model:
+
+```{r}
+allVarlm=lm(oxidant~wind+temperature+insolation+humidity,data=data)
+summary(allVarlm)
+```
+
+Regarding the summary we can distinguish that *insolation* variable has the highest p-value (0.65728) that is greather than 0.05. We should exclude that variable from our model.
+
+
+```{r}
+windTempHumilm=lm(oxidant~wind+temperature+humidity,data=data)
+summary(windTempHumilm)
+```
+
+In next iteration we can see that also *humidity* variable is not appropriate for our testing. It's p-value (0.131) is greather than 0.05. We should exclude that variable too.
+
+```{r}
+windTemplm=lm(oxidant~wind+temperature,data=data)
+summary(windTemplm)
+```
+
+Now all variables are significant.
+
+As a result, we obtained exactly the same model as received in previous point.
+
+Resulting linear regression model: 
+
+$$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
 
 **Point 4**
 
+THAT ONE?
+
+Resulting linear regression model: 
+
+$$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
+
 **Point 5**
+
+Investigation of residuals.
+
+```{r}
+qqnorm(residuals(windTemplm))
+qqline(residuals(windTemplm))
+```
+
+Residuals represent normal distribution. We can assume that linear regression model was useful in that exercise.
 
 ### Exercise 7

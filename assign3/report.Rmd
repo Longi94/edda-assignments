@@ -320,7 +320,7 @@ expensescrime = read.csv(file = "expensescrime.txt", header = TRUE, sep = " ")
 attach(expensescrime)
 ```
 
-** Step up**
+**Step up**
 
 First we use the step-up method to build a model that explains the `expend` parameter.
 

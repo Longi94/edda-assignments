@@ -314,3 +314,110 @@ In scatter plots we can see some factors that are highly correlated with oxidant
 **Point 5**
 
 ### Exercise 7
+
+```{r, echo = FALSE}
+expensescrime = read.csv(file = "expensescrime.txt", header = TRUE, sep = " ")
+attach(expensescrime)
+```
+
+** Step up**
+
+First we use the step-up method to build a model that explains the `expend` parameter.
+
+```{r}
+summary(lm(expend ~ bad, data = expensescrime))
+summary(lm(expend ~ crime, data = expensescrime))
+summary(lm(expend ~ lawyers, data = expensescrime))
+summary(lm(expend ~ employ, data = expensescrime))
+summary(lm(expend ~ pop, data = expensescrime))
+```
+
+The `employ` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + bad, data = expensescrime))
+summary(lm(expend ~ employ + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+summary(lm(expend ~ employ + pop, data = expensescrime))
+```
+
+The `lawyer` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + pop, data = expensescrime))
+```
+
+All of the p-values are now higher than 0.05 so the rest of the variables do not have a significant impact on tht `expend` variable. The resulting model is following.
+
+$$ expend = -1.107e2 + 2.686e{-2} * lawyers + 2.971e{-2} * employ + error $$
+
+**Step down**
+
+We build a model using the step down method as well to make sure that we get the best model possible that describes the `expend` variable.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + crime + pop, data = expensescrime))
+```
+
+The `crime` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + pop, data = expensescrime))
+```
+
+The `pop` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+```
+
+The `bad` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+```
+
+All the p-values are now significant so we stop the step down loop. We got the same model as the one we got with the step up model.
+
+```{r}
+expendlm = lm(expend ~ employ + lawyers, data = expensescrime)
+```
+
+**Influence points**
+
+To investigate the influence points we calculate the Cook's distances.
+
+```{r}
+round(cooks.distance(expendlm), 2)
+```
+
+All the distances are below 1 so there are no influence points.
+
+**Collinearity**
+
+To check for collinearity we draw scatter plots between the variables.
+
+```{r}
+pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
+```
+
+The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
+
+```{r}
+round(cor(expensescrime[,2:7]), 2)
+```
+
+**Residuals**
+
+To investigate the residuals we draw a Q-Q plot and a scatter plot.
+
+```{r}
+par(mfrow = c(1, 2))
+qqnorm(residuals(expendlm))
+qqline(residuals(expendlm))
+plot(fitted(expendlm), residuals(expendlm))
+```
+
+According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values.

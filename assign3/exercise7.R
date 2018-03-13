@@ -5,10 +5,9 @@ expensescrime = read.csv(file = "expensescrime.txt", header = TRUE, sep = " ")
 attach(expensescrime)
 
 # this whole thing is a multiple linear regression (lecture 8 and lacture 9)
-pairs(expensescrime[,2:7], panel=panel.smooth)
+pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
 
 # step up method
-
 summary(lm(expend ~ bad, data = expensescrime))
 # R-squared 0.6964
 

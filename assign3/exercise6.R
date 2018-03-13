@@ -51,13 +51,33 @@ abline(insolm)
 # STEP-UP
 
 #the best - the highest R^2: wind
+# wind - 0.5863
 
 # wind + temperature
 windTemplm=lm(oxidant~wind+temperature,data=data)
 summary(windTemplm)
 # R2: 0.7773 - signifficant increase
 
-# wind + temperature + insolation
+# wind + humidity
+windHumilm=lm(oxidant~wind+humidity,data=data)
+summary(windHumilm)
+# R2: 0.5913 - insignifficant increase
+
+# wind + insolation
+windInsolm=lm(oxidant~wind+insolation,data=data)
+summary(windInsolm)
+# R2: 0.6613
+
+# THE BEST:  wind + temperature
+
+#lets go further
+
+# [wind + temperature] + humidity
+windTempHumilm=lm(oxidant~wind+temperature+humidity,data=data)
+summary(windTempHumilm)
+# R2: 0.7964
+
+# [wind + temperature] + insolation
 windTempInslm=lm(oxidant~wind+temperature+insolation,data=data)
 summary(windTempInslm)
 # R2: 0.7816 - insignifficant increase, we should stop
@@ -66,11 +86,16 @@ summary(windTempInslm)
 # POINT 3
 #######################
 
-#included all relevant variables
-windTempInslm=lm(oxidant~wind+temperature+insolation,data=data)
-summary(windTempInslm)
+#STEP DOWN
 
-#for insolation p-value is higher than 0.05 - we remove that variable
+#included all relevant variables
+allVarlm=lm(oxidant~wind+temperature+insolation+humidity,data=data)
+summary(allVarlm)
+
+#for insolation p-value is higher than 0.05 (0.65728) - we remove that variable
+windTempHumilm=lm(oxidant~wind+temperature+humidity,data=data)
+summary(windTempHumilm)
+
+#for humidity p-value is higher than 0.05 (0.131) - we remove that variable
 windTemplm=lm(oxidant~wind+temperature,data=data)
 summary(windTemplm)
-

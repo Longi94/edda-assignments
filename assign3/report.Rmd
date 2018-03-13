@@ -17,15 +17,80 @@ library(lme4)
 
 ### Exercise 1
 
+Investigating our dataset (bread.txt) we can distinguish one numerical outcome (hours) and two factors that can be fixed at discrete number of levels (3 levels of environment [cold,intermediate,warm] and 2 levels of humidity [dry,wet]).
+
+```{r}
+data = read.table("bread.txt", header=TRUE)
+data
+```
+
+Such a dataset is a good candidate to be tested by 2-way ANOVA method.
+
 **Point 1**
+
+Data randomization for 2-way ANOVA:
+
+```{r}
+N = 3; I = 3; J = 2
+rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J)))
+```
+
+As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
 
 **Point 2**
 
+```{r, echo = FALSE}
+boxplot(hours~environment,data=data)
+```
+```{r, echo = FALSE}
+boxplot(hours~humidity,data=data)
+```
+
+Looking at boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
+Similar observation corresponds to humidity: wet bread slices decay faster then dry ones.
+
+```{r, echo = FALSE}
+attach(data)
+interaction.plot(environment,humidity,hours)
+interaction.plot(humidity,environment,hours)
+```
+
+Interaction plots show that there is significant correlation between environment and humidity factors.
+Bread slices decay faster when they are wet and are kept in intermediate or warm environment.
+
 **Point 3**
+
+Analysis of variance:
+To test the variance we decided to use 2-way ANOVA as we have one numerical outcome (hours) and two factors with fixed levels (humidity and environment).
+
+```{r}
+data$environment = as.factor(data$environment)
+data$humidity = as.factor(data$humidity)
+dataaov = lm(hours~environment*humidity, data=data)
+anova(dataaov)
+```
+
+Analysis of p-values:
+
+* environment factor have a main effect (p-value = 2.461e-10 < 0.05) 
+* humidity factor have a main effect (p-value = 4.316e-06 < 0.05)
+* there is significat interaction between environment and humidity (p-value = 3.705e-07 < 0.05)
 
 **Point 4**
 
+Both factors, environment and humidity, interact with each other.
+We are not able to test only one factor without second factor taken into account.
+We cannot judge which factor has the greatest influence on the decay since factors interact with each other.
+
 **Point 5**
+
+```{r, echo = FALSE}
+qqnorm(residuals(dataaov))
+qqline(residuals(dataaov))
+```
+
+We can distinguish outliers BUT I HAVE NO IDEA HOW TO COMMENT THAT
+
 
 ### Exercise 2
 
@@ -111,7 +176,7 @@ The Q-Q plot indicates a normal distribution and the residuals are distributed e
 friedman.test(time, interface, skill)
 ```
 
-We got a p-value of 0.04076 so the null hypothesis that the interface has no effect on the search time can be rejected.
+We got a p-value of **0.04076** so the null hypothesis that the interface has no effect on the search time can be rejected.
 
 **Point 7**
 
@@ -122,7 +187,7 @@ aovinter = lm(time ~ interface, data = search)
 anova(aovinter)
 ```
 
-We got a p-value of 0.09642 so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
+We got a p-value of **0.09642** so we cannot reject the null hypothesis, that the search time is the same for all interfaces. In the interaction graphs in Point 2 we obsorve that skill as a high impact on the outcome measurement. This analysis is not right to perform since we are ignoring the `skill` variable.
 
 The ANOVA test assumes normal distribution and we can verify this with a Q-Q plot. THe plot below maybe curving slightly, but base don this plot it is still reasonable to assume normal distribution.
 
@@ -185,13 +250,54 @@ Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.47
 
 ### Exercise 4
 
+```{r}
+cows = read.table("cow.txt", header = TRUE)
+attach(cows)
+```
+
 **Point 1**
+
+We test the null hypothesis with a 1-way ANOVA test.
+
+```{r}
+cowaov = lm(milk ~ treatment)
+anova(cowaov)
+```
+
+We get a p-value of **0.967**5, which means that we cannot reject the null hypothesis.
 
 **Point 2**
 
+We estimate the differnce using a paired two sample t-test.
+
+```{r}
+t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
+```
+
+The resulting mean of differences is **0.244**.
+
 **Point 3**
 
+We use the crossover design to perform the test with mixed effects.
+
+```{r}
+cows$id = factor(id)
+cows$per = factor(per)
+cowslmer = lmer(milk ~ treatment + order + per + (1 | id),
+                data = cows, REML = FALSE)
+cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
+anova(cowslmer1, cowslmer)
+```
+
+Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got int Point 1 but with a different p-value.
+
+TODO EXPLAIN WHY?
+
 **Point 4**
+
+This is the same piece of code we used in Point 2 to calculate the estimate difference between milk productions. The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis.
+
+TODO EXPLAIN WHY?
 
 ### Exercise 5
 
@@ -292,7 +398,17 @@ Looking at the p-value from the permutation test and from the chisquare test, we
 
 ### Exercise 6
 
+```{r, echo = FALSE}
+data = read.table("airpollution.txt", header=TRUE)
+```
+
 **Point 1**
+
+```{r}
+pairs(data, panel=panel.smooth)
+```
+
+In scatter plots we can see some factors that are highly correlated with oxidant that is a main factor of our investigation. Some slopes are highly positive (oxidant~temperature) or negative (oxidant~wind) so linear regression model should be useful here.
 
 **Point 2**
 
@@ -303,3 +419,110 @@ Looking at the p-value from the permutation test and from the chisquare test, we
 **Point 5**
 
 ### Exercise 7
+
+```{r, echo = FALSE}
+expensescrime = read.csv(file = "expensescrime.txt", header = TRUE, sep = " ")
+attach(expensescrime)
+```
+
+**Step up**
+
+First we use the step-up method to build a model that explains the `expend` parameter.
+
+```{r}
+summary(lm(expend ~ bad, data = expensescrime))
+summary(lm(expend ~ crime, data = expensescrime))
+summary(lm(expend ~ lawyers, data = expensescrime))
+summary(lm(expend ~ employ, data = expensescrime))
+summary(lm(expend ~ pop, data = expensescrime))
+```
+
+The `employ` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + bad, data = expensescrime))
+summary(lm(expend ~ employ + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+summary(lm(expend ~ employ + pop, data = expensescrime))
+```
+
+The `lawyer` variable has the highest p-value so wo add that to the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + crime, data = expensescrime))
+summary(lm(expend ~ employ + lawyers + pop, data = expensescrime))
+```
+
+All of the p-values are now higher than 0.05 so the rest of the variables do not have a significant impact on tht `expend` variable. The resulting model is following.
+
+$$ expend = -1.107e2 + 2.686e{-2} * lawyers + 2.971e{-2} * employ + error $$
+
+**Step down**
+
+We build a model using the step down method as well to make sure that we get the best model possible that describes the `expend` variable.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + crime + pop, data = expensescrime))
+```
+
+The `crime` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad + pop, data = expensescrime))
+```
+
+The `pop` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers + bad, data = expensescrime))
+```
+
+The `bad` variable has the highest p-value so we removed that from the model.
+
+```{r}
+summary(lm(expend ~ employ + lawyers, data = expensescrime))
+```
+
+All the p-values are now significant so we stop the step down loop. We got the same model as the one we got with the step up model.
+
+```{r}
+expendlm = lm(expend ~ employ + lawyers, data = expensescrime)
+```
+
+**Influence points**
+
+To investigate the influence points we calculate the Cook's distances.
+
+```{r}
+round(cooks.distance(expendlm), 2)
+```
+
+All the distances are below 1 so there are no influence points.
+
+**Collinearity**
+
+To check for collinearity we draw scatter plots between the variables.
+
+```{r}
+pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
+```
+
+The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
+
+```{r}
+round(cor(expensescrime[,2:7]), 2)
+```
+
+**Residuals**
+
+To investigate the residuals we draw a Q-Q plot and a scatter plot.
+
+```{r}
+par(mfrow = c(1, 2))
+qqnorm(residuals(expendlm))
+qqline(residuals(expendlm))
+plot(fitted(expendlm), residuals(expendlm))
+```
+
+According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values.

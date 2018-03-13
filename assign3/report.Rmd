@@ -1,0 +1,88 @@
+---
+title: "Assignment 3"
+author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
+date: "14 March 2018"
+output: pdf_document
+fontsize: 11pt
+highlight: tango
+---
+
+```{r, echo = FALSE}
+library(knitr)
+library(multcomp)
+library(lme4)
+```
+
+## Exercises
+
+### Exercise 1
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+**Point 5**
+
+### Exercise 2
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+**Point 5**
+
+**Point 6**
+
+**Point 7**
+
+### Exercise 3
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+### Exercise 4
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+### Exercise 5
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+### Exercise 6
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+**Point 5**
+
+### Exercise 7

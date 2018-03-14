@@ -32,7 +32,7 @@ Data randomization for 2-way ANOVA:
 
 ```{r}
 N = 3; I = 3; J = 2
-rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J)))
+kable(rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J))))
 ```
 
 As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
@@ -399,7 +399,7 @@ Running the following code a contingency table is created and we can see that th
 
 
 ```{r}
-xtabs(~medicine+nausea)
+kable(xtabs(~medicine+nausea))
 ```
 
 **Point 3**
@@ -716,7 +716,7 @@ pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
 The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
 
 ```{r}
-round(cor(expensescrime[,2:7]), 2)
+kable(round(cor(expensescrime[,2:7]), 2))
 ```
 
 **Residuals**

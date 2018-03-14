@@ -261,14 +261,11 @@ attach(data)
 A three-way test was performed in the following way:
 ```{r}
 model1 = lm(acidity~starter+batch+position,data)
-model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
-data.aov = aov(model2,data)
+data.aov = anova(model1)
 summary(data.aov)
 ```
 
-Looking at the p-values, we can conclude that the starter and batch do not have an effect on the overall acidity (not sure about this)
-
-//Not sure what to write about the summary yet.
+Looking at the p-values, we can conclude that the starter and batch have an effect on the overall acidity (not sure about this)
 
 
 **Point 2**
@@ -284,11 +281,17 @@ summary(startermult)
 ```
 
 
-Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$,$$ \alpha 4 = \alpha 2 $$, $$ \alpha 4 = \alpha 3 $$, and $$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05
+Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$$$ \alpha 4 = \alpha 2 $$$$ \alpha 4 = \alpha 3 $$$$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05 Therefore starter 4 leads to significantly different acidity.
 
 
 **Point 3**
-//Not sure about this part. can't fid P value from point 1 summary that matches alpha2 = alpha1
+
+Looking at the summary of the linear regression model and the summary from point 2:
+```{r}
+summary(model1)
+```
+
+The p-value from the summary of 1) alpha 1 = alpha 2 is 0.7538 while the p-value from 2) is 0.997. A possible reason that the 1st p-value is smaller than the 2nd p-value is that in the first test, starter is not tested at different levels while in the 2nd test it is.
 
 **Point 4**
 In order to find the confidence intervals for testing all differences of the main effect of starter we could use the "startermult" variable from the second question of this exercise. The test was performed in the following way:

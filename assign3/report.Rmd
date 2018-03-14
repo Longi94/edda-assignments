@@ -244,8 +244,11 @@ data.aov = aov(model2,data)
 summary(data.aov)
 ```
 
+Looking at the p-values, we can conclude that the starter and batch do not have an effect on the overall acidity (not sure about this)
 
 //Not sure what to write about the summary yet.
+
+
 **Point 2**
 
 

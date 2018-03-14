@@ -11,9 +11,8 @@ attach(data)
 
 #Exercise 1
 model1 = lm(acidity~starter+batch+position,data)
-model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
-data.aov = aov(model2,data)
-summary(data.aov)
+data.aov = anova(model1)
+data.aov
 
 #Exercise 2
 model = lm(acidity~starter+batch+position, data=data)
@@ -22,7 +21,7 @@ summary(startermult)
 
 
 #Exercise 3
-
+summary(model1)
 
 #Exercise 4
 confint(startermult, level=0.95)

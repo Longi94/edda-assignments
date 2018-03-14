@@ -15,16 +15,20 @@ library(lme4)
 
 ## Exercises
 
+
 ### Exercise 1
 
 Investigating our dataset (bread.txt) we can distinguish one numerical outcome (hours) and two factors that can be fixed at discrete number of levels (3 levels of environment [cold,intermediate,warm] and 2 levels of humidity [dry,wet]).
 
 ```{r}
 data = read.table("bread.txt", header=TRUE)
-data
+kable(data)
 ```
 
 Such a dataset is a good candidate to be tested by 2-way ANOVA method.
+
+\pagebreak
+
 
 **Point 1**
 
@@ -35,7 +39,7 @@ N = 3; I = 3; J = 2
 kable(rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J))))
 ```
 
-As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
+As a result we obtained 18 experimental units in columns (18 slices of bread) with assigned levels of two factors.
 
 * First row describes levels of environment factor.
 * Second row describes levels of humidity factor.
@@ -50,7 +54,7 @@ boxplot(hours~humidity,data=data)
 ```
 
 Looking at mean values in boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
-Similar observation corresponds to humidity: wet bread slices decay faster then dry ones.
+Similar observation corresponds to humidity: wet bread slices decay faster than dry ones.
 
 ```{r, echo = FALSE}
 attach(data)

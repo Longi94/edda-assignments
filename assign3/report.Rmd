@@ -181,10 +181,18 @@ Both p-values are lower than 0.05, which means that both factors have a signific
 
 **Point 4**
 
+We need to overrule the default contrasts first and run lm again.
+
 ```{r}
-multser = glht(aovser, linfct = mcp(skill = "Tukey"))
-summary(multser)
+contrasts(search$interface) = contr.sum
+contrasts(search$skill) = contr.sum
+aovser2 = lm(time ~ interface + skill, data = search)
+summary(aovser2)
+estimate = 20.5467 + 2.1533 - (0.3133 - 2.3867)
+estimate
 ```
+
+The estimated time is **24.7734**.
 
 **Point 5**
 
@@ -719,4 +727,4 @@ qqline(residuals(expendlm))
 plot(fitted(expendlm), residuals(expendlm))
 ```
 
-According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values.
+According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values, the plot is not symmetrical at all. As a result, we cannot consider the model we got a good model.

@@ -40,15 +40,12 @@ As a result we obtained 18 experimental units (18 slices of bread) with assigned
 **Point 2**
 
 ```{r, echo = FALSE}
+par(mfrow=c(1,2))
 boxplot(hours~environment,data=data)
-```
-
-
-```{r, echo = FALSE}
 boxplot(hours~humidity,data=data)
 ```
 
-Looking at boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
+Looking at mean values in boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
 Similar observation corresponds to humidity: wet bread slices decay faster then dry ones.
 
 ```{r, echo = FALSE}
@@ -57,13 +54,14 @@ interaction.plot(environment,humidity,hours)
 interaction.plot(humidity,environment,hours)
 ```
 
-Interaction plots show that there is significant correlation between environment and humidity factors.
+Interaction plots show that there is significant correlation between environment and humidity factors. Presented lines are not parallel.
 Bread slices decay faster when they are wet and are kept in intermediate or warm environment.
 
 **Point 3**
 
 Analysis of variance:
 To test the variance we decided to use 2-way ANOVA as we have one numerical outcome (hours) and two factors with fixed levels (humidity and environment).
+As we assume interactions between factors, we use full model.
 
 ```{r}
 data$environment = as.factor(data$environment)
@@ -78,6 +76,31 @@ Analysis of p-values:
 * humidity factor have a main effect (p-value = 4.316e-06 < 0.05)
 * there is significat interaction between environment and humidity (p-value = 3.705e-07 < 0.05)
 
+Regarding plots and 2-way ANOVA results, we can assume that both humidity and environment have influence on bread decay. The higher the temperature of the environment is and the higher the humidity is, the faster bread slices decay.
+
+*ESTIMATION*
+
+```{r}
+contrasts(data$environment)=contr.sum
+contrasts(data$humidity)=contr.sum
+dataaov2=lm(hours~environment*humidity,data=data)
+summary(dataaov2)
+```
+
+
+The p-values are for testing the null hypothesis that the coefficient is 0.
+
+All obtained p-values are below 0.05 so we can assume that every coefficient has influence on result.
+
+
+*95% confidence intervals*
+
+```{r}
+confint(dataaov2)
+```
+
+
+
 **Point 4**
 
 Both factors, environment and humidity, interact with each other.
@@ -86,12 +109,14 @@ We cannot judge which factor has the greatest influence on the decay since facto
 
 **Point 5**
 
-```{r, echo = FALSE}
+Analysis of residuals:
+
+```{r}
 qqnorm(residuals(dataaov))
 qqline(residuals(dataaov))
 ```
 
-We can distinguish outliers BUT I HAVE NO IDEA HOW TO COMMENT THAT
+We can distinguish extreme values outstanding from trend line, normality is doubtful. We should transform the data or consider outliers.
 
 
 ### Exercise 2

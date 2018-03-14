@@ -50,7 +50,7 @@ boxplot(hours~humidity,data=data)
 ```
 
 Looking at mean values in boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
-Similar observation corresponds to humidity: wet bread slices decay faster then dry ones.
+Similar observation corresponds to humidity: wet bread slices decay faster than dry ones.
 
 ```{r, echo = FALSE}
 attach(data)
@@ -58,7 +58,7 @@ interaction.plot(environment,humidity,hours)
 interaction.plot(humidity,environment,hours)
 ```
 
-Interaction plots show that there is significant correlation between environment and humidity factors. Presented lines are not parallel.
+Interaction plots show that there is significant correlation between environment and humidity factors. The lines previously shown are not parallel.
 Bread slices decay faster when they are wet and are kept in intermediate or warm environment.
 
 **Point 3**
@@ -102,7 +102,6 @@ All obtained p-values are below 0.05 so we can assume that every coefficient has
 ```{r}
 confint(dataaov2)
 ```
-
 
 
 **Point 4**

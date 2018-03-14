@@ -461,9 +461,12 @@ pairs(data, panel=panel.smooth)
 
 In scatter plots we can see some factors that are highly correlated with oxidant that is a main factor of our investigation. Some slopes are highly positive (oxidant~temperature) or negative (oxidant~wind) so linear regression model should be useful here.
 
+
 **Point 2**
+*Step-up method*
 
 *STEP 1*
+
 
 We are setting a simple linear regression model for each of explanatory variable.
 
@@ -526,8 +529,8 @@ Considering all received R^2 values, for further processing, we should select *w
 
 *STEP 2*
 
-Now, we are going to extend our current model (oxidant~wind) by another explanatory variable.
 
+Now, we are going to extend our current model (oxidant~wind) by another explanatory variable.
 
 *Temperature*
 ```{r}
@@ -558,6 +561,7 @@ For further processing we should extend our model by *temperature* variable as t
 
 *STEP 3*
 
+
 In this step we proceed with extending our current model (oxidant~wind+temperature - R^2 = 0,7773).
 
 
@@ -582,7 +586,10 @@ Resulting linear regression model:
 
 $$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
 
+
+
 **Point 3**
+*Step-down medthod*
 
 All variables included in model:
 
@@ -614,12 +621,11 @@ Resulting linear regression model:
 
 $$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
 
+
 **Point 4**
 
-THAT ONE?
-
-Resulting linear regression model: 
-
+Both methods resulted in the same model.
+Chosen linear regression model with estimated coefficients: 
 $$total = -5.20334 +-0.42706*wind - 0.52035*temperature + error$$
 
 **Point 5**
@@ -631,7 +637,13 @@ qqnorm(residuals(windTemplm))
 qqline(residuals(windTemplm))
 ```
 
-Residuals represent normal distribution. We can assume that linear regression model was useful in that exercise.
+```{r}
+plot(fitted(windTemplm),residuals(windTemplm))
+```
+
+We can assume that esiduals represent normal distribution. They are spread quite evenly.
+
+We can assume that linear regression model was useful in that exercise.
 
 ### Exercise 7
 

@@ -74,14 +74,12 @@ anova(aovser)
 # 4.
 ##########################
 
-summary(aovser)
-
-# multiple comparisons (lecture 6, slide 6)
-multser = glht(aovser, linfct = mcp(skill = "Tukey"))
-summary(multser)
-# estimate for skill level 4 and interface 3 (4-3) is 2.267
-
-# wait I think this is the standard deviation, all the results are around 20, im not sure about this one
+contrasts(search$interface) = contr.sum
+contrasts(search$skill) = contr.sum
+aovser2 = lm(time ~ interface + skill, data = search)
+summary(aovser2)
+estimate = 20.5467 + 2.1533 - (0.3133 - 2.3867)
+estimate
 
 ##########################
 # 5.

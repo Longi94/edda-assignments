@@ -32,7 +32,7 @@ Data randomization for 2-way ANOVA:
 
 ```{r}
 N = 3; I = 3; J = 2
-rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J)))
+kable(rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J))))
 ```
 
 As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
@@ -310,24 +310,20 @@ attach(cows)
 
 **Point 1**
 
-We test the null hypothesis with a 1-way ANOVA test.
+We investigate the linear model to see if treatmens have a significant effect or not.
 
 ```{r}
-cowaov = lm(milk ~ treatment)
-anova(cowaov)
+cows$id = factor(cows$id)
+cows$per = factor(cows$per)
+cowaov = lm(milk ~ treatment + id + per, data = cows)
+summary(cowaov)
 ```
 
-We get a p-value of **0.967**5, which means that we cannot reject the null hypothesis.
+We can see the that p-value for `treatmentB` is **0.516536**, which means that we cannot reject the null hypothesis and the treatments do not have a significant effect on the result.
 
 **Point 2**
 
-We estimate the differnce using a paired two sample t-test.
-
-```{r}
-t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
-```
-
-The resulting mean of differences is **0.244**.
+The estimation can be read from the summary in the previous point. The slope of treatmentB is **-0.51** and the slope of treatmentA is **0.51**. Therefore the estimated difference in milk prudiction is **1.02**.
 
 **Point 3**
 
@@ -342,15 +338,11 @@ cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
 anova(cowslmer1, cowslmer)
 ```
 
-Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got int Point 1 but with a different p-value.
-
-TODO EXPLAIN WHY?
+Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got in Point 1 and the p-values are also close.
 
 **Point 4**
 
-This is the same piece of code we used in Point 2 to calculate the estimate difference between milk productions. The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis.
-
-TODO EXPLAIN WHY?
+The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis. However, a two sample paired t-test is invalid in this case because it only considers the difference of the means. It does not take other effects into account so the results cannot be trusted.
 
 
 \pagebreak
@@ -414,7 +406,7 @@ Running the following code a contingency table is created and we can see that th
 
 
 ```{r}
-xtabs(~medicine+nausea)
+kable(xtabs(~medicine+nausea))
 ```
 
 **Point 3**
@@ -734,7 +726,7 @@ pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
 The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
 
 ```{r}
-round(cor(expensescrime[,2:7]), 2)
+kable(round(cor(expensescrime[,2:7]), 2))
 ```
 
 **Residuals**

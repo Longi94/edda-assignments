@@ -9,20 +9,19 @@ attach(cows)
 # 1.
 ##########################
 
-# lecture 4, 1-way ANOVA
-cowaov = lm(milk ~ treatment)
-anova(cowaov)
+# 2-way ANOVA
+cows$id = factor(cows$id)
+cows$per = factor(cows$per)
+cowaov = lm(milk ~ treatment + id + per, data = cows)
+summary(cowaov)
 
-# p-value 0.9675, null hypothesis not rejected (does not influence)
+# p-value 0.516536, null hypothesis not rejected (does not influence)
 
 ##########################
 # 2.
 ##########################
 
-# Dunno about this one
-# same as 4.??
-t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
-# mean of differences is 0.2444444 
+# estimatios is in the first point, estimated difference is 1.02
 
 ##########################
 # 3.
@@ -39,7 +38,7 @@ summary(cowslmer)
 cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
 anova(cowslmer1, cowslmer)
 # p-value 0.446, accept the null hypothesis
-# we got different results, why? idk
+# we got similar results
 
 ##########################
 # 4.

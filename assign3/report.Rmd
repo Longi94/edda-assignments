@@ -32,23 +32,24 @@ Data randomization for 2-way ANOVA:
 
 ```{r}
 N = 3; I = 3; J = 2
-rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J)))
+kable(rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J))))
 ```
 
 As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
 
+* First row describes levels of environment factor.
+* Second row describes levels of humidity factor.
+* Third row describes unit index.
+
 **Point 2**
 
 ```{r, echo = FALSE}
+par(mfrow=c(1,2))
 boxplot(hours~environment,data=data)
-```
-
-
-```{r, echo = FALSE}
 boxplot(hours~humidity,data=data)
 ```
 
-Looking at boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
+Looking at mean values in boxplots, we can see that for intermediate and warm environments, bread slices decay much faster.
 Similar observation corresponds to humidity: wet bread slices decay faster then dry ones.
 
 ```{r, echo = FALSE}
@@ -57,13 +58,14 @@ interaction.plot(environment,humidity,hours)
 interaction.plot(humidity,environment,hours)
 ```
 
-Interaction plots show that there is significant correlation between environment and humidity factors.
+Interaction plots show that there is significant correlation between environment and humidity factors. Presented lines are not parallel.
 Bread slices decay faster when they are wet and are kept in intermediate or warm environment.
 
 **Point 3**
 
 Analysis of variance:
 To test the variance we decided to use 2-way ANOVA as we have one numerical outcome (hours) and two factors with fixed levels (humidity and environment).
+As we assume interactions between factors, we use full model.
 
 ```{r}
 data$environment = as.factor(data$environment)
@@ -78,6 +80,31 @@ Analysis of p-values:
 * humidity factor have a main effect (p-value = 4.316e-06 < 0.05)
 * there is significat interaction between environment and humidity (p-value = 3.705e-07 < 0.05)
 
+Regarding plots and 2-way ANOVA results, we can assume that both humidity and environment have influence on bread decay. The higher the temperature of the environment is and the higher the humidity is, the faster bread slices decay.
+
+*ESTIMATION*
+
+```{r}
+contrasts(data$environment)=contr.sum
+contrasts(data$humidity)=contr.sum
+dataaov2=lm(hours~environment*humidity,data=data)
+summary(dataaov2)
+```
+
+
+The p-values are for testing the null hypothesis that the coefficient is 0.
+
+All obtained p-values are below 0.05 so we can assume that every coefficient has influence on result.
+
+
+*95% confidence intervals*
+
+```{r}
+confint(dataaov2)
+```
+
+
+
 **Point 4**
 
 Both factors, environment and humidity, interact with each other.
@@ -86,13 +113,23 @@ We cannot judge which factor has the greatest influence on the decay since facto
 
 **Point 5**
 
-```{r, echo = FALSE}
-qqnorm(residuals(dataaov))
-qqline(residuals(dataaov))
+Analysis of residuals:
+
+```{r}
+qqnorm(residuals(dataaov2))
+qqline(residuals(dataaov2))
 ```
 
-We can distinguish outliers BUT I HAVE NO IDEA HOW TO COMMENT THAT
+We can distinguish two outliers from trend line, but the rest seem to keep normal distribution.
 
+
+```{r}
+plot(fitted(dataaov2),residuals(dataaov2))
+```
+
+The residuals seem to be spread evenly.
+
+\pagebreak
 
 ### Exercise 2
 
@@ -156,10 +193,18 @@ Both p-values are lower than 0.05, which means that both factors have a signific
 
 **Point 4**
 
+We need to overrule the default contrasts first and run lm again.
+
 ```{r}
-multser = glht(aovser, linfct = mcp(skill = "Tukey"))
-summary(multser)
+contrasts(search$interface) = contr.sum
+contrasts(search$skill) = contr.sum
+aovser2 = lm(time ~ interface + skill, data = search)
+summary(aovser2)
+estimate = 20.5467 + 2.1533 - (0.3133 - 2.3867)
+estimate
 ```
+
+The estimated time is **24.7734**.
 
 **Point 5**
 
@@ -198,6 +243,8 @@ qqnorm(residuals(aovinter))
 qqline(residuals(aovinter))
 ```
 
+\pagebreak
+
 ### Exercise 3
 ```{r}
 data = read.table("cream.txt", header=TRUE)
@@ -214,11 +261,14 @@ attach(data)
 A three-way test was performed in the following way:
 ```{r}
 model1 = lm(acidity~starter+batch+position,data)
-data.aov = anova(model1)
+model2 = update(model1, . ~ . - starter:batch:position) #remove interactions
+data.aov = aov(model2,data)
 summary(data.aov)
 ```
 
-Looking at the p-values, we can conclude that the starter and batch have an effect on the overall acidity (not sure about this)
+Looking at the p-values, we can conclude that the starter and batch do not have an effect on the overall acidity (not sure about this)
+
+//Not sure what to write about the summary yet.
 
 
 **Point 2**
@@ -234,17 +284,11 @@ summary(startermult)
 ```
 
 
-Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$$$ \alpha 4 = \alpha 2 $$$$ \alpha 4 = \alpha 3 $$$$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05 Therefore starter 4 leads to significantly different acidity.
+Looking at the P values produced, we can see that $$ \alpha 4 = \alpha 1 $$,$$ \alpha 4 = \alpha 2 $$, $$ \alpha 4 = \alpha 3 $$, and $$ \alpha 5 = \alpha 4 $$ for the previously mentioned null hypothesis are rejected as they are  < 0.05
 
 
 **Point 3**
-
-Looking at the summary of the linear regression model and the summary from point 2:
-```{r}
-summary(model1)
-```
-
-The p-value from the summary of 1) alpha 1 = alpha 2 is 0.7538 while the p-value from 2) is 0.997. A possible reason that the 1st p-value is smaller than the 2nd p-value is that in the first test, starter is not tested at different levels while in the 2nd test it is.
+//Not sure about this part. can't fid P value from point 1 summary that matches alpha2 = alpha1
 
 **Point 4**
 In order to find the confidence intervals for testing all differences of the main effect of starter we could use the "startermult" variable from the second question of this exercise. The test was performed in the following way:
@@ -255,6 +299,7 @@ confint(startermult, level=0.95)
 ```
 Looking at the result, we can conclude that the intervals [1.3201,4.2999], [1.4701,4.4499], [2.3001,5.2799], and [-4.7835,-1.8045] do not contain the number zero.
 
+\pagebreak
 
 ### Exercise 4
 
@@ -265,24 +310,20 @@ attach(cows)
 
 **Point 1**
 
-We test the null hypothesis with a 1-way ANOVA test.
+We investigate the linear model to see if treatmens have a significant effect or not.
 
 ```{r}
-cowaov = lm(milk ~ treatment)
-anova(cowaov)
+cows$id = factor(cows$id)
+cows$per = factor(cows$per)
+cowaov = lm(milk ~ treatment + id + per, data = cows)
+summary(cowaov)
 ```
 
-We get a p-value of **0.9675**, which means that we cannot reject the null hypothesis.
+We can see the that p-value for `treatmentB` is **0.516536**, which means that we cannot reject the null hypothesis and the treatments do not have a significant effect on the result.
 
 **Point 2**
 
-We estimate the differnce using a paired two sample t-test.
-
-```{r}
-t.test(milk[treatment == "A"], milk[treatment == "B"], paired = TRUE)
-```
-
-The resulting mean of differences is **0.244**.
+The estimation can be read from the summary in the previous point. The slope of treatmentB is **-0.51** and the slope of treatmentA is **0.51**. Therefore the estimated difference in milk prudiction is **1.02**.
 
 **Point 3**
 
@@ -297,15 +338,14 @@ cowslmer1 = lmer(milk ~ order + per + (1 | id), data = cows, REML = FALSE)
 anova(cowslmer1, cowslmer)
 ```
 
-Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got int Point 1 but with a different p-value.
-
-TODO EXPLAIN WHY?
+Here we get a p-value of **0.446** so the null hypthesis cannot be rejected again. This is the same result as the one we got in Point 1 and the p-values are also close.
 
 **Point 4**
 
-This is the same piece of code we used in Point 2 to calculate the estimate difference between milk productions. The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis.
+The test returned a p-value of **0.8281**, which is compatible with the other results in that we also cannot reject the null hypothesis. However, a two sample paired t-test is invalid in this case because it only considers the difference of the means. It does not take other effects into account so the results cannot be trusted.
 
-TODO EXPLAIN WHY?
+
+\pagebreak
 
 ### Exercise 5
 
@@ -366,7 +406,7 @@ Running the following code a contingency table is created and we can see that th
 
 
 ```{r}
-xtabs(~medicine+nausea)
+kable(xtabs(~medicine+nausea))
 ```
 
 **Point 3**
@@ -404,6 +444,9 @@ pl;chisq.test(xtabs(~nausea+medicine))[[3]]
 
 Looking at the p-value from the permutation test and from the chisquare test, we can clearly see that they are different. The Chi-squared test tests for the level of independence. The variable "myt" is based on the original values of medicine and nausea, while in the permutation test we change the sample for medicine in each iteration. This could be the reason for the difference in P-values.
 
+
+\pagebreak
+
 ### Exercise 6
 
 ```{r, echo = FALSE}
@@ -417,7 +460,6 @@ pairs(data, panel=panel.smooth)
 ```
 
 In scatter plots we can see some factors that are highly correlated with oxidant that is a main factor of our investigation. Some slopes are highly positive (oxidant~temperature) or negative (oxidant~wind) so linear regression model should be useful here.
-
 
 **Point 2**
 
@@ -684,7 +726,7 @@ pairs(expensescrime[,c(2, 5, 6)], panel=panel.smooth)
 The variables `lawyers` and `employ` look very collinear. We also compute the correlation between the variables and the result of **0.97** supports the result of the plots.
 
 ```{r}
-round(cor(expensescrime[,2:7]), 2)
+kable(round(cor(expensescrime[,2:7]), 2))
 ```
 
 **Residuals**
@@ -698,4 +740,4 @@ qqline(residuals(expendlm))
 plot(fitted(expendlm), residuals(expendlm))
 ```
 
-According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values.
+According to these plots we cannot assume normality and there are extreme values as well. The spread of the residuals is smaller for small values and lot higher for high values, the plot is not symmetrical at all. As a result, we cannot consider the model we got a good model.

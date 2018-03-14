@@ -37,6 +37,10 @@ rbind(rep(1:I,each=N*J),rep(1:J,N*I),sample(1:(N*I*J)))
 
 As a result we obtained 18 experimental units (18 slices of bread) with assigned levels of two factors.
 
+* First row describes levels of environment factor.
+* Second row describes levels of humidity factor.
+* Third row describes unit index.
+
 **Point 2**
 
 ```{r, echo = FALSE}
@@ -112,11 +116,18 @@ We cannot judge which factor has the greatest influence on the decay since facto
 Analysis of residuals:
 
 ```{r}
-qqnorm(residuals(dataaov))
-qqline(residuals(dataaov))
+qqnorm(residuals(dataaov2))
+qqline(residuals(dataaov2))
 ```
 
-We can distinguish extreme values outstanding from trend line, normality is doubtful. We should transform the data or consider outliers.
+We can distinguish two outliers from trend line, but the rest seem to keep normal distribution.
+
+
+```{r}
+plot(fitted(dataaov2),residuals(dataaov2))
+```
+
+The residuals seem to be spread evenly.
 
 
 ### Exercise 2

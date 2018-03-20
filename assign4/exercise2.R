@@ -5,9 +5,20 @@ attach(psidata)
 # 1.
 ##########################
 
+# gpa distribution
 hist(psidata[, 3], main = "gpa")
+qqnorm(psidata[, 3])
+qqline(psidata[, 3])
 
-xtabs(~ gpa, data = psidata)
+# bpxplots of gpa for pass/nopass and psi/nopsi
+boxplot(psidata[passed == 0, 3], psidata[passed == 1, 3], names = c("Didn't pass", "Passed"))
+boxplot(psidata[psi == 0, 3], psidata[psi == 1, 3], names = c("No PSI", "PSI"))
+
+# table, number of individuals with all combinations of psi/passed
+xtabs( ~ passed + psi, data = psidata)
+
+# percentage of passed individuals for psi variable
+round(xtabs(passed ~ psi, data = psidata) / xtabs( ~ passed, data = psidata), 2)
 
 ##########################
 # 2.

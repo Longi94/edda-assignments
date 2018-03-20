@@ -7,8 +7,15 @@ attach(psidata)
 
 # gpa distribution
 hist(psidata[, 3], main = "gpa")
+
 qqnorm(psidata[, 3])
 qqline(psidata[, 3])
+
+qqnorm(psidata[psi == 1, 3])
+qqline(psidata[psi == 1, 3])
+
+qqnorm(psidata[psi == 0, 3])
+qqline(psidata[psi == 0, 3])
 
 # bpxplots of gpa for pass/nopass and psi/nopsi
 boxplot(psidata[passed == 0, 3], psidata[passed == 1, 3], names = c("Didn't pass", "Passed"))

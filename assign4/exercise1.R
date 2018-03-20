@@ -17,6 +17,25 @@ data = cbind(data,loglongevity)
 ###############
 boxplot(loglongevity~activity,data=data)
 
+log_isolated = data[data$activity == 'isolated',]$loglongevity
+hist(log_isolated)
+qqnorm(log_isolated)
+qqline(log_isolated)
+
+log_low = data[data$activity == 'low',]$loglongevity
+hist(log_low)
+qqnorm(log_low)
+qqline(log_low)
+
+log_high = data[data$activity == 'high',]$loglongevity
+hist(log_high)
+qqnorm(log_high)
+qqline(log_high)
+
+flies_loglongevity.data <- data.frame(log_isolated, log_low, log_high)
+
+stripchart(flies_loglongevity.data,vertical=TRUE)
+
 #what else?
 
 

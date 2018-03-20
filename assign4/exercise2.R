@@ -45,7 +45,7 @@ summary(psiglm)
 # 4.
 ##########################
 
-# this is probably not right, should be comupted from the summery of the model
+# https://www.theanalysisfactor.com/r-tutorial-glm1/
 
 psipassed = data.frame(psi = factor(1), gpa = 3)
 predict(psiglm, psipassed, type = "response")
@@ -57,20 +57,13 @@ predict(psiglm, psinotpassed, type = "response")
 
 # 0.08230274
 
-# rather this ? (from the summary)
-# psi
-Ppsi = -11.602 + 2.338 + 3 * 3.063
-
-#nopsi
-Pnopsi = -11.602 + 3 * 3.063
-
 ##########################
 # 5.
 ##########################
 
-# code from internet, probably wrong, fuck me
-# 10.35817 times more likely
-exp(cbind(OR = coef(psiglm), confint(psiglm)))
+# from the summery in 2
+# 10.36049 times more likely
+exp(2.338)
 
 ##########################
 # 6.

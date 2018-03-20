@@ -49,29 +49,109 @@ library(knitr)
 
 ### Exercise 2
 
+```{r}
+psidata = read.table("psi.txt", header = TRUE)
+attach(psidata)
+```
 
 **Point 1**
 
+First we draw a Q-Q plot of the distribution of the GPA scores of the students.
+
+```{r}
+qqnorm(psidata[, 3])
+qqline(psidata[, 3])
+```
+
+We can observe, that the distribution does not look normal. However there is not much information in this plot, so we split the students the group who received *psi* and into the group who were taught using the existing method.
+
+```{r}
+par(mfrow = c(1, 2))
+
+qqnorm(psidata[psi == 1, 3])
+qqline(psidata[psi == 1, 3])
+
+qqnorm(psidata[psi == 0, 3])
+qqline(psidata[psi == 0, 3])
+```
+
+The left Q-Q plot represents the students of received *psi*. We can see that the gpa distribution of students who received *psi* looks like a normal distribution, while while the other distribtuion does not look normal. This might be indicative, that the students for the experiments were not picked well and the results should not be fully trusted.
+
+```{R}
+par(mfrow = c(1, 2))
+
+boxplot(psidata[psi == 0, 3], psidata[psi == 1, 3],
+        names = c("No PSI", "PSI"))
+boxplot(psidata[passed == 0, 3], psidata[passed == 1, 3],
+        names = c("Didn't pass", "Passed"))
+```
+
+We can clearly see on the left boxplot, that the distributions are not the same. For example, students with a very low GPA are not tested using the existing teaching method. On the right boxplot we can observe that the GPA mean of the student who passed the test is a lot higher than the mean of the students who did not pass. This implies that the GPA score of a student has a considerable effect on the outcome of the test.
+
+```{r}
+table1 = xtabs( ~ passed + psi, data = psidata)
+rownames(table1) <- c("not passed", "passed")
+kable(table1, caption = "Number of individuals",
+      col.names = c("no psi", "psi"), row.names = TRUE)
+```
+
+```{r}
+table2 = round(xtabs(passed ~ psi, data = psidata) /
+                 xtabs(~ passed, data = psidata), 2)
+kable(table2, caption = "Percentage of students who passed",
+      col.names = c("psi", "%"))
+```
 
 **Point 2**
 
+```{r}
+psidata$psi = factor(psidata$psi)
+psiglm = glm(passed ~ psi + gpa, data = psidata, family = binomial)
+summary(psiglm)
+```
 
 **Point 3**
 
+The coefficient of the *psi* variable in the model is **2.338**. The number is positive which means psi has a positive effect on the outcome.
 
 **Point 4**
 
+```{r}
+psipassed = data.frame(psi = factor(1), gpa = 3)
+predict(psiglm, psipassed, type = "response")
+
+psinotpassed = data.frame(psi = factor(0), gpa = 3)
+predict(psiglm, psinotpassed, type = "response")
+```
+
+The estimated probability that a student with a gpa equal to 3 who receives *psi* passes the assignment is **0.4815864** and the probabilty for a student who does not receive *psi* is **0.08230274**
 
 **Point 5**
 
+```{r}
+exp(2.338)
+```
+
+The odds increase by **10.36049** when *psi* is given to students. This means that the probability of the students with *psi* passing the exam is **10.36049** times higher than that of the students with the existing method.
 
 **Point 6**
 
+```{r}
+x = matrix(c(3, 15, 8, 6), 2, 2)
+fisher.test(x)
+```
+
+**15** is the number of students who did not get *psi* and did not show improvement. **6** is the number of students who had *psi* but did not show improvement.
+
+As a result, we got a p-value of **0.0265** so we reject the null hypothesis, the probabilities are not the same.
 
 **Point 7**
 
+This analysis ignores the gpa continuous variable, of which we know that it has an effect on the outcome, so it is wrong to perform the experiment this way.
 
 **Point 8**
+
+Fisher's Exact Test is simpler and well suited for small datasets. However, it is computationally intense. Unlike the Fisher's Test the logistic regression is better for predicting a binary outcome of continuous variables like the gpa variable, but it assumes not outliers in the dataset.
 
 
 ### Exercise 3

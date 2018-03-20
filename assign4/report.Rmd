@@ -83,6 +83,12 @@ library(knitr)
 **Point 2**
 
 
+The location-scale family is a family of probability distributions which includes a location paramater and a scale parameter. The location paramter shifts the data, graphically this would mean that the data is shifted to the left or right along the x-axis. The shift paramter spreads out the data or compresses it depending on whether the shift is less than 1 or greater than 1. To check if a distribution is from the poisson distribution we can use the following formula: $$P(X=x) = e^\frac{1}{\lambda} * \frac{\lambda}{x!}\  ,x = 0,1,2,3,4,... $$ Then looking at the probabilities returned we can determine whether the distribution of X follows the Poisson distribution, and it is represented as: $$X \sim Po(\lambda)$$ Furthermore, the mean and variance for a Poisson distribution should both equal $\lambda$ and for very large $\lambda$ the $Poisson(\lambda)-distribution$ is approximately equal to a normal distribution. Therefore looking at these two samples and applying the previously mentioned probability function:
+```{r}
+```
+
+
+
 **Point 3**
 
 

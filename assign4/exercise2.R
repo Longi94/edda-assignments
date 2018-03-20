@@ -5,9 +5,27 @@ attach(psidata)
 # 1.
 ##########################
 
+# gpa distribution
 hist(psidata[, 3], main = "gpa")
 
-xtabs(~ gpa, data = psidata)
+qqnorm(psidata[, 3])
+qqline(psidata[, 3])
+
+qqnorm(psidata[psi == 1, 3])
+qqline(psidata[psi == 1, 3])
+
+qqnorm(psidata[psi == 0, 3])
+qqline(psidata[psi == 0, 3])
+
+# bpxplots of gpa for pass/nopass and psi/nopsi
+boxplot(psidata[passed == 0, 3], psidata[passed == 1, 3], names = c("Didn't pass", "Passed"))
+boxplot(psidata[psi == 0, 3], psidata[psi == 1, 3], names = c("No PSI", "PSI"))
+
+# table, number of individuals with all combinations of psi/passed
+xtabs( ~ passed + psi, data = psidata)
+
+# percentage of passed individuals for psi variable
+round(xtabs(passed ~ psi, data = psidata) / xtabs( ~ passed, data = psidata), 2)
 
 ##########################
 # 2.
@@ -27,7 +45,7 @@ summary(psiglm)
 # 4.
 ##########################
 
-# this is probably not right, should be comupted from the summery of the model
+# https://www.theanalysisfactor.com/r-tutorial-glm1/
 
 psipassed = data.frame(psi = factor(1), gpa = 3)
 predict(psiglm, psipassed, type = "response")
@@ -39,20 +57,13 @@ predict(psiglm, psinotpassed, type = "response")
 
 # 0.08230274
 
-# rather this ? (from the summary)
-# psi
-Ppsi = -11.602 + 2.338 + 3 * 3.063
-
-#nopsi
-Pnopsi = -11.602 + 3 * 3.063
-
 ##########################
 # 5.
 ##########################
 
-# code from internet, probably wrong, fuck me
-# 10.35817 times more likely
-exp(cbind(OR = coef(psiglm), confint(psiglm)))
+# from the summery in 2
+# 10.36049 times more likely
+exp(2.338)
 
 ##########################
 # 6.

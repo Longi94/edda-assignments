@@ -2,9 +2,11 @@
 title: "Assignment 4"
 author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
 date: "21 March 2018"
-output: pdf_document
-fontsize: 11pt
+output:
+  pdf_document: default
+  word_document: default
 highlight: tango
+fontsize: 11pt
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -16,62 +18,359 @@ library(knitr)
 
 ### Exercise 1
 
+```{r}
+data = read.table("fruitflies.txt", header=TRUE)
+```
 
 **Point 1**
 
 
+Adding a column *loglongevity* to data-frame, containing the logarithm of the number of days until death:
+```{r}
+# 1. prepare an array of results
+loglongevity = c(1:length(data$longevity))
+# 2. calculate logarithm values of longevity for each fly in datafrane
+for (i in 1:length(data$longevity)) {
+  loglongevity[i] = log(data$longevity[i])
+}
+# 3. bind new array of results with current dataframe
+data = cbind(data,loglongevity)
+```
+As a result, our dataframe was expanded by new column called *loglongevity* that will be used as an outcome variable in further processing.
+
+Example (showing first 5 rows of data):
+```{r, echo=FALSE}
+kable(data[c(1:5),])
+```
+
 **Point 2**
+
+Our dataframe cointains information about three groups of fruit flies.
+
+* isolated - group of 25 male flies that were kept alone
+* low - group of 25 male flies that were kept with one female virgin fly per day
+* high - group of 25 male flies that were kept with eight female virgin fly per day
+
+```{r, echo=FALSE}
+boxplot(loglongevity~activity,data=data, main="(log)longevity of male flies")
+```
+
+Regarding the boxplot chart we can see that mean values of longevity (actually logarithm values) differ depending on group of flies. We can assume that the higher sexual activity is, the shorter life of male fly is.
+
+
+
+Analyse of *isolated* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+log_isolated = data[data$activity == 'isolated',]$loglongevity
+hist(log_isolated)
+qqnorm(log_isolated)
+qqline(log_isolated)
+```
+
+
+\pagebreak
+Analyse of *low* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+log_low = data[data$activity == 'low',]$loglongevity
+hist(log_low)
+qqnorm(log_low)
+qqline(log_low)
+```
+
+
+
+Analyse of *high* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+log_high = data[data$activity == 'high',]$loglongevity
+hist(log_high)
+qqnorm(log_high)
+qqline(log_high)
+```
+
+\pagebreak
+Stripchart to compare three groups:
+
+```{r, echo=FALSE}
+flies_loglongevity.data <- data.frame(log_isolated, log_low, log_high)
+
+stripchart(flies_loglongevity.data,vertical=TRUE)
+```
+
+Regarding that detailed analyse of each group, we can say that their distribution resambles normal. We need to take into account fact, that our outcome values are logarithmic ones.
+
+
+A stripchart also shows, that flies with higher sexual activity live shorter than isolated ones.
 
 
 **Point 3**
 
+In this point statistical test will be performed to check, wether sexual activity influences longevity. Thorax lenght won't be taken into account.
+
+Our model has one numerical output that is *loglongevity* and one factor with fixed values (*activity* - isolated, low, high). For such a model we decided to perform 1-way ANOVA test.
+
+
+Test results:
+```{r}
+dataaov=lm(loglongevity~activity,data=data)
+anova(dataaov)
+```
+
+The p-value for testing H0 : u1 = u2 is 1.798e-07 ( < 0.05 ). We reject null hypothesis.
+
+This test confirms that sexual activity has significant affect on longevity of male flies.
+
+\pagebreak
 
 **Point 4**
 
+Estimation:
+```{r}
+summary(dataaov)
+```
+By default R uses treatment contrasts: it takes the first level (here activityhighd) as a base level and compares the other levels to it.
+
+As a result we have obtained estimated longetivities (logarithmic values of days) for the three conditions:
+
+* *high activity* group: **u1 = 3.60**
+* *low activity* group: u3-u1 = 0.39 => **u3 = 3.99**
+* *isolated* group: u2-u1 = 0.52 => **u2 = 4.12**
+
+
+95% confidence intervals:
+```{r}
+confint(dataaov)
+```
+
+Estimated longetivities clearly show that isolated male flies live longer than flies with sexual activity. The higher this activity is, the shoter the life of fly is.
+
+\pagebreak
 
 **Point 5**
 
+In this point statistical test will be performed to check, wether sexual activity influences longevity. Thorax lenght will be taken into account now.
+
+Our current model has one numerical output that is *loglongevity*, one factor with fixed values (*activity* - isolated, low, high) and one numerical explanatory variable *thorax*.
+
+For such a model we decided to perform ANCOVA test.
+
+```{r}
+data$activity=as.factor(data$activity)
+dataaov2=lm(loglongevity~thorax+activity,data=data)
+anova(dataaov2)
+```
+
+Low p-values ( < 0.05 ) mean that both *thorax* and *activity* have significant affect on output.
 
 **Point 6**
+
+Estimation:
+
+```{r}
+contrasts(data$activity)=contr.sum
+dataaov3 = lm(loglongevity~thorax+activity,data=data)
+summary(dataaov3)
+confint(dataaov3)
+```
+
+Results:
+
+* u = 1.45
+* B = 2.36
+* a1 = -0.29 - activity1: isolated
+* a2 = 0.11 - activity1: low
+* a3 = -a1-a2 = 0.18 - activity1: high
+
+*Model equation:*
+$$Y_{i,n} = \mu + \alpha_i + \beta X_{i,n} + e_{i,n} $$
+
+**Estimation for average thorax length:**
+```{r}
+avg_thorax = mean(data$thorax)
+avg_thorax
+```
+
+**activity1 - isolated**:
+$$Y = 1.45 - 0.29 + (2.36 * 0.82) + e $$
+*Result: 3,09*
+
+**activity2 - low**:
+$$Y = 1.45 + 0.11 + (2.36 * 0.82) + e $$
+*Result: 3,49*
+
+**activity2 - high**:
+$$Y = 1.45 + 0.18 + (2.36 * 0.82) + e $$
+*Result: 3,56*
+
+
+**Estimation for smallest thorax length:**
+
+```{r}
+min_thorax = min(data$thorax)
+min_thorax
+```
+
+**activity1 - isolated**:
+$$Y = 1.45 - 0.29 + (2.36 * 0.64) + e $$
+*Result: 2,67*
+
+**activity2 - low**:
+$$Y = 1.45 + 0.11 + (2.36 * 0.64) + e $$
+*Result: 3,07*
+
+**activity2 - high**:
+$$Y = 1.45 + 0.18 + (2.36 * 0.64) + e $$
+*Result: 3,14*
+
+Comment: According to obtained results: we can now assume that the higher the activity is, the longer a fly lives which is an opposite statement to previous results.
 
 
 **Point 7**
 
+```{r,echo=FALSE}
+attach(data)
+plot(loglongevity~thorax,pch=as.character(activity))
+```
+
+On the plot above we can see correlation between longetivity and thorax depending on activity type (h-high, l-low, i-isolated).
+
+We can see that thorax length is highly correlated with longetivity. The longer the fly lives, the longer it's thorax is.
 
 **Point 8**
 
+We should not take thorax into account when performing tests. The length of thorax depends on how long the fly lives. BLAH BLAH BLAH NO IDEA HELP ME PLS
 
 **Point 9**
+```{r, echo=FALSE}
+qqnorm(residuals(dataaov2))
+plot(fitted(dataaov2),residuals(dataaov2))
+```
 
+We can see that distribution follows normal and residuals are spred evenly.
+
+
+\pagebreak
 
 **Point 10**
+```{r}
+data$activity=as.factor(data$activity)
+dataaov3=lm(longevity~thorax+activity,data=data)  # type second!!!
+anova(dataaov3)
+qqnorm(residuals(dataaov3))
+plot(fitted(dataaov3),residuals(dataaov3))
+```
 
 
 ### Exercise 2
 
+```{r}
+psidata = read.table("psi.txt", header = TRUE)
+attach(psidata)
+```
 
 **Point 1**
 
+First we draw a Q-Q plot of the distribution of the GPA scores of the students.
+
+```{r}
+qqnorm(psidata[, 3])
+qqline(psidata[, 3])
+```
+
+We can observe, that the distribution does not look normal. However there is not much information in this plot, so we split the students the group who received *psi* and into the group who were taught using the existing method.
+
+```{r}
+par(mfrow = c(1, 2))
+
+qqnorm(psidata[psi == 1, 3])
+qqline(psidata[psi == 1, 3])
+
+qqnorm(psidata[psi == 0, 3])
+qqline(psidata[psi == 0, 3])
+```
+
+The left Q-Q plot represents the students of received *psi*. We can see that the gpa distribution of students who received *psi* looks like a normal distribution, while while the other distribtuion does not look normal. This might be indicative, that the students for the experiments were not picked well and the results should not be fully trusted.
+
+```{R}
+par(mfrow = c(1, 2))
+
+boxplot(psidata[psi == 0, 3], psidata[psi == 1, 3],
+        names = c("No PSI", "PSI"))
+boxplot(psidata[passed == 0, 3], psidata[passed == 1, 3],
+        names = c("Didn't pass", "Passed"))
+```
+
+We can clearly see on the left boxplot, that the distributions are not the same. For example, students with a very low GPA are not tested using the existing teaching method. On the right boxplot we can observe that the GPA mean of the student who passed the test is a lot higher than the mean of the students who did not pass. This implies that the GPA score of a student has a considerable effect on the outcome of the test.
+
+```{r}
+table1 = xtabs( ~ passed + psi, data = psidata)
+rownames(table1) <- c("not passed", "passed")
+kable(table1, caption = "Number of individuals",
+      col.names = c("no psi", "psi"), row.names = TRUE)
+```
+
+```{r}
+table2 = round(xtabs(passed ~ psi, data = psidata) /
+                 xtabs(~ passed, data = psidata), 2)
+kable(table2, caption = "Percentage of students who passed",
+      col.names = c("psi", "%"))
+```
 
 **Point 2**
 
+```{r}
+psidata$psi = factor(psidata$psi)
+psiglm = glm(passed ~ psi + gpa, data = psidata, family = binomial)
+summary(psiglm)
+```
 
 **Point 3**
 
+The coefficient of the *psi* variable in the model is **2.338**. The number is positive which means psi has a positive effect on the outcome.
 
 **Point 4**
 
+```{r}
+psipassed = data.frame(psi = factor(1), gpa = 3)
+predict(psiglm, psipassed, type = "response")
+
+psinotpassed = data.frame(psi = factor(0), gpa = 3)
+predict(psiglm, psinotpassed, type = "response")
+```
+
+The estimated probability that a student with a gpa equal to 3 who receives *psi* passes the assignment is **0.4815864** and the probabilty for a student who does not receive *psi* is **0.08230274**
 
 **Point 5**
 
+```{r}
+exp(2.338)
+```
+
+The odds increase by **10.36049** when *psi* is given to students. This means that the probability of the students with *psi* passing the exam is **10.36049** times higher than that of the students with the existing method.
 
 **Point 6**
 
+```{r}
+x = matrix(c(3, 15, 8, 6), 2, 2)
+fisher.test(x)
+```
+
+**15** is the number of students who did not get *psi* and did not show improvement. **6** is the number of students who had *psi* but did not show improvement.
+
+As a result, we got a p-value of **0.0265** so we reject the null hypothesis, the probabilities are not the same.
 
 **Point 7**
 
+This analysis ignores the gpa continuous variable, of which we know that it has an effect on the outcome, so it is wrong to perform the experiment this way.
 
 **Point 8**
+
+Fisher's Exact Test is simpler and well suited for small datasets. However, it is computationally intense. Unlike the Fisher's Test the logistic regression is better for predicting a binary outcome of continuous variables like the gpa variable, but it assumes not outliers in the dataset.
 
 
 ### Exercise 3

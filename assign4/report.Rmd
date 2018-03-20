@@ -374,25 +374,83 @@ Fisher's Exact Test is simpler and well suited for small datasets. However, it i
 
 
 ### Exercise 3
-
+```{r}
+par(mfrow=c(2,3))
+data = read.table("africa.txt",header=TRUE)
+attach(data)
+```
 
 **Point 1**
+
+For this part a total of 6 samples were generated. The first three have the same value for 'n' (number of events in a given interval) but a different $\lambda$ (mean number of events per interval) value.
+
+```{r}
+n = c(50,150,300)
+lambda = c(1,10,50)
+for(i in n){
+  for(j in lambda){
+    data_generated = rpois(i,j)
+    boxplot(data_generated, main=c("n",i,"lambda",j))
+    qqnorm(data_generated, main=c("n",i,"lambda",j));qqline(data_generated)
+  }
+}
+```
+
+Looking at the Q-Q plots above we can notice that that in each case there is a pattern. However, when 'n' is smaller the pattern is less visible and as 'n' gets bigger the pattern is more visible (in fact the patterns get darker). Furthermore, as lambda gets bigger the data seems to follow normality. Looking at the box-plots we can see that in fact the mean is always equal to the lambda value.
 
 
 **Point 2**
 
 
-The location-scale family is a family of probability distributions which includes a location paramater and a scale parameter. The location paramter shifts the data, graphically this would mean that the data is shifted to the left or right along the x-axis. The shift paramter spreads out the data or compresses it depending on whether the shift is less than 1 or greater than 1. To check if a distribution is from the poisson distribution we can use the following formula: $$P(X=x) = e^\frac{1}{\lambda} * \frac{\lambda}{x!}\  ,x = 0,1,2,3,4,... $$ Then looking at the probabilities returned we can determine whether the distribution of X follows the Poisson distribution, and it is represented as: $$X \sim Po(\lambda)$$ Furthermore, the mean and variance for a Poisson distribution should both equal $\lambda$ and for very large $\lambda$ the $Poisson(\lambda)-distribution$ is approximately equal to a normal distribution. Therefore looking at these two samples and applying the previously mentioned probability function:
-```{r}
-```
+The location-scale family is a family of probability distributions which includes a location paramater and a scale parameter. The location paramter shifts the data, graphically this would mean that the data is shifted to the left or right along the x-axis. The shift paramter spreads out the data or compresses it depending on whether the shift is less than 1 or greater than 1. To check if a distribution is from the poisson distribution we can use the following formula: $$P(X=x) = e^\frac{1}{\lambda} * \frac{\lambda}{x!}\  ,x = 0,1,2,3,4,... $$ Then looking at the probabilities returned we can determine whether the distribution of X follows the Poisson distribution, and it is represented as: $$X \sim Po(\lambda)$$ Furthermore, the mean and variance for a Poisson distribution should both equal $\lambda$ and for very large $\lambda$ the $Poisson(\lambda)-distribution$ is approximately equal to a normal distribution. 
+
 
 
 
 **Point 3**
+```{r}
+africaglm = glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numelec+numregim,family=poisson,data=data) 
+summary(africaglm) 
+```
 
 
 **Point 4**
 
 
-**Point 5**
+The step-down approach is an approach in which we run the summary of the regresion model, in our case this is the summary from point 3. Then we find the highest p-value, check if it is greater than 0.05 and if it is we remove this variable. This is done until the remaining variables are of significance ( < 0.05).
 
+```{r}
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numregim,family=poisson,data=data))
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size,family=poisson,data=data))
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn,family=poisson,data=data))
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote,family=poisson,data=data))
+summary(glm(miltcoup~oligarchy+pollib+parties,family=poisson,data=data))
+#Following this approach, the new model is: miltcoup = 0.251377 + 0.092622*oligarchy - 0.574103*pollib + 0.22059*parites + error
+```
+
+The variable with the highest p-value was 'numelec', followed by 'numregim', 'size', 'popn', and finally 'pctvote'. This left us with the model: $$miltcoup = 0.251377 + 0.092622*oligarchy - 0.574103*pollib + 0.22059*parties + error$$ 
+
+**Point 5**
+```{r}
+par(mfrow=c(1,3))
+model = glm(miltcoup~oligarchy+pollib+parties,family=poisson,data=data)
+```
+
+First we take a look at the the following three plots.
+```{r}
+plot(fitted(model),residuals(model))
+plot(log(fitted(model)),residuals(model))
+plot(log(fitted(model)),residuals(model, type="response"))
+```
+
+Looking at the three plots above we can see that there is a pattern, and that furthermore in the second and third plot we can clearly see that the residuals increase with the logarithm of the fitted values. Since a pattern can be observed, we take a look at the following three plots.
+
+```{r}
+plot(fitted(africaglm), residuals(africaglm))
+plot(log(fitted(africaglm)),residuals(africaglm))
+plot(log(fitted(africaglm)),residuals(africaglm, type="response"))
+```
+
+In the above three plots the pattern is also visible. Since it is present in the full model and the model following the step-down approach then it is not present in the reduced model due to removing variables.
+
+The residuals seem to start high and go low, then high again and low again.

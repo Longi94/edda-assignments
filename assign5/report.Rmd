@@ -95,6 +95,8 @@ model3 = lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos[-16, ])
 summary(model3)
 ```
 
+Looking at the plot we can see that the island which is the most influential point is the island $Isabela$. After removing it from the model and running the summary we can conclude that the changes are insignificant.
+
 
 **Point 5**
 

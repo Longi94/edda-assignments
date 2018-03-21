@@ -165,5 +165,9 @@ modlog3 = lm(log(Species) ~ logArea * logElevation + logScruz, data = galapagos)
 summary(modlog3)
 ```
 
+
+Looking at the plot we can see that there is collinearity between elevation and area. However, after adding an interaction between them there was no significant change, therefore it is not useful to do so.
+
+
 **Point 10**
 

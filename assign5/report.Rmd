@@ -50,9 +50,26 @@ summary(lm(sqrt(Species) ~ Area + Elevation + Adjacent, data = galapagos))
 
 ```{r}
 summary(lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos))
+
+
 ```
 
 **Point 3**
+
+```{r}
+model1 = lm(Species ~ Elevation + Adjacent, data = galapagos)
+model2 = lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos)
+
+par(mfrow = c(1, 2))
+qqnorm(residuals(model1))
+qqline(residuals(model1))
+plot(fitted(model1), residuals(model1))
+
+par(mfrow = c(1, 2))
+qqnorm(residuals(model2))
+qqline(residuals(model2))
+plot(fitted(model2), residuals(model2))
+```
 
 **Point 4**
 

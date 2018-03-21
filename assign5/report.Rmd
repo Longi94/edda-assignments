@@ -7,3 +7,29 @@ fontsize: 11pt
 highlight: tango
 ---
 
+### Exercise Galapagos
+
+```{r}
+galapagos = read.table("gala.txt", header = TRUE)
+```
+
+**Point 1**
+
+**Point 2**
+
+**Point 3**
+
+**Point 4**
+
+**Point 5**
+
+**Point 6**
+
+**Point 7**
+
+**Point 8**
+
+**Point 9**
+
+**Point 10**
+

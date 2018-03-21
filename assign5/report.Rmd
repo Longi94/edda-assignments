@@ -1,0 +1,9 @@
+---
+title: "Final Assignment"
+author: "Daniel Galea, Konrad Karas and Long Tran, group 6"
+date: "21 March 2018"
+output: pdf_document
+fontsize: 11pt
+highlight: tango
+---
+

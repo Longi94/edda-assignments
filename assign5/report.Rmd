@@ -11,9 +11,27 @@ highlight: tango
 
 ```{r}
 galapagos = read.table("gala.txt", header = TRUE)
+attach(galapagos)
 ```
 
 **Point 1**
+
+```{r}
+summary(lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galapagos))
+```
+
+
+```{r}
+summary(lm(Species ~ Area + Elevation + Scruz + Adjacent, data = galapagos))
+```
+
+```{r}
+summary(lm(Species ~ Elevation + Scruz + Adjacent, data = galapagos))
+```
+
+```{r}
+summary(lm(Species ~ Elevation + Adjacent, data = galapagos))
+```
 
 **Point 2**
 

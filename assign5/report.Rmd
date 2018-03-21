@@ -171,3 +171,5 @@ Looking at the plot we can see that there is collinearity between elevation and 
 
 **Point 10**
 
+
+In our opinion the best model is the best model which initially had all variables enclosed in the logarithmic function, and the model itself enclosed in the step function which selects a submodel buy using the AIC-criterion. In the first two models it does not seem realistic as the errors do not seem to have constant variance, while in the logarithmic models the variance of error can be seen as more constant.

@@ -79,6 +79,10 @@ qqline(residuals(model2))
 plot(fitted(model2), residuals(model2))
 ```
 
+Looking at the above plots we can conclude that the linear model with the response $sqrt(Species)$ is the better model as its residuals are more normal and the fitted plot is equally spread out.
+
+
+
 **Point 4**
 
 ```{r}

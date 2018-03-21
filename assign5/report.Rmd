@@ -115,6 +115,12 @@ By applying this transformation the data seems to be more linear and it became m
 
 **Point 6**
 
+```{r}
+modlog=lm(log(Species)~log(Area)+log(Elevation)+log(Nearest)+log(Scruz+1)+log(Adjacent),data=galapagos)
+modlog1 = step(modlog)
+summary(modlog1)
+```
+
 **Point 7**
 
 **Point 8**

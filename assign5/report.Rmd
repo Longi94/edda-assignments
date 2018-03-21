@@ -124,7 +124,7 @@ summary(modlog1)
 Looking at the summary above we can conclude that not all variables are significant. The variable $log(Scruz + 1)$ is not significant.
 
 **Point 7**
-
+Species is exponential so applying log to it and area makes more sense since area is not exponential. 
 **Point 8**
 
 ```{r}
@@ -138,6 +138,8 @@ qqline(residuals(modlog1))
 plot(fitted(modlog1), residuals(modlog1))
 ```
 
+
+In this model the residuals seem to be spread equally and it also seems to normalize the data and reduces influence points.
 
 **Point 9**
 

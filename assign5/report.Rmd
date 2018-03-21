@@ -121,6 +121,8 @@ modlog1 = step(modlog)
 summary(modlog1)
 ```
 
+Looking at the summary above we can conclude that not all variables are significant. The variable $log(Scruz + 1)$ is not significant.
+
 **Point 7**
 
 **Point 8**

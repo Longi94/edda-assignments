@@ -243,7 +243,7 @@ We can see that thorax length is highly correlated with longetivity. The longer 
 
 **Point 8**
 
-We should not take thorax into account when performing tests. The length of thorax depends on how long the fly lives. BLAH BLAH BLAH NO IDEA HELP ME PLS
+We should not take thorax into account when performing tests. Propably the length of thorax depends on how long the fly lives. 
 
 **Point 9**
 ```{r, echo=FALSE}
@@ -257,6 +257,40 @@ We can see that distribution follows normal and residuals are spred evenly.
 \pagebreak
 
 **Point 10**
+
+Analyse of *isolated* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+isolated = data[data$activity == 'isolated',]$longevity
+hist(isolated)
+qqnorm(isolated)
+qqline(isolated)
+```
+
+Analyse of *low* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+low = data[data$activity == 'low',]$longevity
+hist(low)
+qqnorm(low)
+qqline(low)
+```
+
+Analyse of *high* group:
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+high = data[data$activity == 'high',]$longevity
+hist(high)
+qqnorm(high)
+qqline(high)
+```
+
+Now data distribution seems to follow normal distribution more accurately then after log-transformation.
+We can assume that this transformation wasn't necessary.
+
 ```{r}
 data$activity=as.factor(data$activity)
 dataaov3=lm(longevity~thorax+activity,data=data)  # type second!!!

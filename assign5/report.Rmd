@@ -98,6 +98,15 @@ summary(model3)
 
 **Point 5**
 
+```{r}
+par(mfrow=c(2,3))
+for (i in 1:6) hist(galapagos[,i],main=colnames(galapagos)[i],xlab="",ylab="")
+pairs(galapagos, panel=panel.smooth)
+for (i in 1:6) hist(log(galapagos[,i]),main=colnames(galapagos)[i],xlab="",ylab="")
+pairs(log(galapagos), panel=panel.smooth)
+```
+
+
 **Point 6**
 
 **Point 7**

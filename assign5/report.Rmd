@@ -81,6 +81,17 @@ plot(fitted(model2), residuals(model2))
 
 **Point 4**
 
+```{r}
+round(cooks.distance(model2), 2)
+plot(1:30, cooks.distance(model2))
+```
+
+```{r}
+model3 = lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos[-16, ])
+summary(model3)
+```
+
+
 **Point 5**
 
 **Point 6**

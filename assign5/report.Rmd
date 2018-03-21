@@ -109,6 +109,10 @@ pairs(log(galapagos), panel=panel.smooth)
 ```
 
 
+By applying this transformation the data seems to be more linear and it became more readable. This meant that we could see more correlations between the explanatory variables and Species, furthermore the data become more normal.
+
+
+
 **Point 6**
 
 **Point 7**

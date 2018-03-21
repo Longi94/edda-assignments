@@ -35,6 +35,23 @@ summary(lm(Species ~ Elevation + Adjacent, data = galapagos))
 
 **Point 2**
 
+
+```{r}
+summary(lm(sqrt(Species) ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galapagos))
+```
+
+```{r}
+summary(lm(sqrt(Species) ~ Area + Elevation + Scruz + Adjacent, data = galapagos))
+```
+
+```{r}
+summary(lm(sqrt(Species) ~ Area + Elevation + Adjacent, data = galapagos))
+```
+
+```{r}
+summary(lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos))
+```
+
 **Point 3**
 
 **Point 4**

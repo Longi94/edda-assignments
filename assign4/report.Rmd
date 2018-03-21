@@ -181,10 +181,10 @@ confint(dataaov3)
 Results:
 
 * u = 1.45
-* B = 2.36
-* a1 = -0.29 - activity1: isolated
-* a2 = 0.11 - activity1: low
-* a3 = -a1-a2 = 0.18 - activity1: high
+* B = 2.97
+* a1 = -0.23 - activity1: high
+* a2 = 0.17 - activity2: isolated
+* a3 = -a1-a2 = 0.06 - activity3: low
 
 *Model equation:*
 $$Y_{i,n} = \mu + \alpha_i + \beta X_{i,n} + e_{i,n} $$
@@ -195,17 +195,17 @@ avg_thorax = mean(data$thorax)
 avg_thorax
 ```
 
-**activity1 - isolated**:
-$$Y = 1.45 - 0.29 + (2.36 * 0.82) + e $$
-*Result: 3,09*
+**activity1 - high**:
+$$Y = 1.45 - 0.23 + (2.97 * 0.82) + e $$
+*Result: 3,65*
+
+**activity2 - isolated**:
+$$Y = 1.45 + 0.17 + (2.97 * 0.82) + e $$
+*Result: 4,05*
 
 **activity2 - low**:
-$$Y = 1.45 + 0.11 + (2.36 * 0.82) + e $$
-*Result: 3,49*
-
-**activity2 - high**:
-$$Y = 1.45 + 0.18 + (2.36 * 0.82) + e $$
-*Result: 3,56*
+$$Y = 1.45 + 0.06 + (2.97 * 0.82) + e $$
+*Result: 3,94*
 
 
 **Estimation for smallest thorax length:**
@@ -215,19 +215,19 @@ min_thorax = min(data$thorax)
 min_thorax
 ```
 
-**activity1 - isolated**:
-$$Y = 1.45 - 0.29 + (2.36 * 0.64) + e $$
-*Result: 2,67*
+**activity1 - high**:
+$$Y = 1.45 - 0.23 + (2.97 * 0.64) + e $$
+*Result: 3,12*
+
+**activity2 - isolated**:
+$$Y = 1.45 + 0.17 + (2.97 * 0.64) + e $$
+*Result: 3,52*
 
 **activity2 - low**:
-$$Y = 1.45 + 0.11 + (2.36 * 0.64) + e $$
-*Result: 3,07*
+$$Y = 1.45 + 0.06 + (2.97 * 0.64) + e $$
+*Result: 3,41*
 
-**activity2 - high**:
-$$Y = 1.45 + 0.18 + (2.36 * 0.64) + e $$
-*Result: 3,14*
-
-Comment: According to obtained results: we can now assume that the higher the activity is, the longer a fly lives which is an opposite statement to previous results.
+Comment: According to obtained results: we can now assume that the higher the activity is, the shorter a fly lives which is similar to previous results.
 
 
 **Point 7**
@@ -375,7 +375,7 @@ Fisher's Exact Test is simpler and well suited for small datasets. However, it i
 
 ### Exercise 3
 ```{r}
-par(mfrow=c(2,3))
+par(mfrow=c(1,2))
 data = read.table("africa.txt",header=TRUE)
 attach(data)
 ```

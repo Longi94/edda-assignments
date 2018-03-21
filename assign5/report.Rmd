@@ -7,6 +7,10 @@ fontsize: 11pt
 highlight: tango
 ---
 
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+```
+
 ### Exercise Galapagos
 
 ```{r}
@@ -17,7 +21,8 @@ attach(galapagos)
 **Point 1**
 
 ```{r}
-summary(lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galapagos))
+summary(lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent,
+           data = galapagos))
 ```
 
 
@@ -34,14 +39,15 @@ summary(lm(Species ~ Elevation + Adjacent, data = galapagos))
 ```
 
 
-Using the step-down approach, we look at the highest p-value (which must also be greater than 0.05) and remove it, and run the model again. This is done until the remaining variables are significant. In this case we first removed the variable $nearest$ followed by $area$ and finally $scruz$.
+Using the step-down approach, we look at the highest p-value (which must also be greater than 0.05) and remove it, and run the model again. This is done until the remaining variables are significant. In this case we first removed the variable *Nearest* followed by *Area* and finally *Scruz*.
 
 
 **Point 2**
 
 
 ```{r}
-summary(lm(sqrt(Species) ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galapagos))
+summary(lm(sqrt(Species) ~ Area + Elevation + Nearest + Scruz + Adjacent,
+           data = galapagos))
 ```
 
 ```{r}
@@ -54,11 +60,9 @@ summary(lm(sqrt(Species) ~ Area + Elevation + Adjacent, data = galapagos))
 
 ```{r}
 summary(lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos))
-
-
 ```
 
-Using the step-down approach we first removed $nearest$ followed by $scruz$ and finally $area$.
+Using the step-down approach we first removed *Nearest* followed by *Scruz* and finally *Area*.
 
 
 
@@ -79,23 +83,23 @@ qqline(residuals(model2))
 plot(fitted(model2), residuals(model2))
 ```
 
-Looking at the above plots we can conclude that the linear model with the response $sqrt(Species)$ is the better model as its residuals are more normal and the fitted plot is equally spread out.
-
-
+Looking at the above plots we can conclude that the linear model with the response *sqrt(Species)* is the better model as its residuals are more normal and the fitted plot is equally spread out.
 
 **Point 4**
 
 ```{r}
-round(cooks.distance(model2), 2)
+kable(round(cooks.distance(model2), 2))
 plot(1:30, cooks.distance(model2))
 ```
+
+Looking at the plot we can see that the island which is the most influential point is the island *Isabela*.
 
 ```{r}
 model3 = lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos[-16, ])
 summary(model3)
 ```
 
-Looking at the plot we can see that the island which is the most influential point is the island $Isabela$. After removing it from the model and running the summary we can conclude that the changes are insignificant.
+After removing it from the model and running the summary we can conclude that the changes are insignificant.
 
 
 **Point 5**
@@ -108,28 +112,33 @@ for (i in 1:6) hist(log(galapagos[,i]),main=colnames(galapagos)[i],xlab="",ylab=
 pairs(log(galapagos), panel=panel.smooth)
 ```
 
-
-By applying this transformation the data seems to be more linear and it became more readable. This meant that we could see more correlations between the explanatory variables and Species, furthermore the data become more normal.
-
-
+By applying this transformation the data seems to be more linear and it became more readable. This meant that we could see more correlations between the explanatory variables and Species, furthermore the distribution of the data became more normal.
 
 **Point 6**
 
 ```{r}
-modlog=lm(log(Species)~log(Area)+log(Elevation)+log(Nearest)+log(Scruz+1)+log(Adjacent),data=galapagos)
+modlog = lm(
+  log(Species) ~ log(Area) + log(Elevation) + log(Nearest) + log(Scruz + 1) +
+  log(Adjacent),
+  data = galapagos
+  )
 modlog1 = step(modlog)
 summary(modlog1)
 ```
 
-Looking at the summary above we can conclude that not all variables are significant. The variable $log(Scruz + 1)$ is not significant.
+Looking at the summary above we can conclude that not all variables are significant. The variable *log(Scruz + 1)* is not significant.
 
 **Point 7**
-Species is exponential so applying log to it and area makes more sense since area is not exponential. 
+
+The area is measured in $km^2$ so it is not a linear, so it makes sense to transform this variable. Larger island have a higher chance of having more species so intuitively there is a correlation between the two and the response variable should be transformed as well.
+
 **Point 8**
 
 ```{r}
 plot(1:30, cooks.distance(modlog1))
 ```
+
+
 
 ```{r}
 par(mfrow = c(1, 2))
@@ -138,8 +147,7 @@ qqline(residuals(modlog1))
 plot(fitted(modlog1), residuals(modlog1))
 ```
 
-
-In this model the residuals seem to be spread equally and it also seems to normalize the data and reduces influence points.
+In this model the residuals seem to be spread equally and it also seems to normalize the distribution of the data and there are no more influence points.
 
 **Point 9**
 
@@ -152,8 +160,10 @@ modlog2 = lm(log(Species) ~ logArea + logElevation + logScruz, data = galapagos)
 pairs(galapagos[, c(7, 8, 9)])
 ```
 
+Looking at the plots we can see that there is collinearity between *Elevation* and *Area*. This is backed by the pairwise correlation of the data. We can see that the currelation between *Elevation* and *Area* is indeed very high.
+
 ```{r}
-round(cor(galapagos[, c(7, 8, 9)]), 2)
+kable(round(cor(galapagos[, c(7, 8, 9)]), 2))
 ```
 
 ```{r}
@@ -165,11 +175,13 @@ modlog3 = lm(log(Species) ~ logArea * logElevation + logScruz, data = galapagos)
 summary(modlog3)
 ```
 
-
-Looking at the plot we can see that there is collinearity between elevation and area. However, after adding an interaction between them there was no significant change, therefore it is not useful to do so.
-
+However, after adding an interaction between them there was no significant change in the model, therefore it is not useful to do so.
 
 **Point 10**
 
 
-In our opinion the best model is the best model which initially had all variables enclosed in the logarithmic function, and the model itself enclosed in the step function which selects a submodel buy using the AIC-criterion. In the first two models it does not seem realistic as the errors do not seem to have constant variance, while in the logarithmic models the variance of error can be seen as more constant.
+In our opinion the best model is the third model, which initially had all variables enclosed in the logarithmic function, and the model itself enclosed in the step function which selects a submodel by using the AIC-criterion.
+
+In the first two models, the independent Gaussian errors with zero mean and constant variance do not seem realistic as the errors do not have constant variance, while in the log-transformed models the variance of error can be seen as more constant.
+
+A good alternative would be constructing a model using the Poisson regression strategy because it is well suited for experiments with a count outcome.

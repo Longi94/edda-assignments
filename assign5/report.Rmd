@@ -143,5 +143,27 @@ In this model the residuals seem to be spread equally and it also seems to norma
 
 **Point 9**
 
+```{r}
+galapagos$logElevation = log(galapagos$Elevation)
+galapagos$logArea = log(galapagos$Area)
+galapagos$logScruz = log(galapagos$Scruz + 1)
+modlog2 = lm(log(Species) ~ logArea + logElevation + logScruz, data = galapagos)
+
+pairs(galapagos[, c(7, 8, 9)])
+```
+
+```{r}
+round(cor(galapagos[, c(7, 8, 9)]), 2)
+```
+
+```{r}
+summary(modlog2)
+```
+
+```{r}
+modlog3 = lm(log(Species) ~ logArea * logElevation + logScruz, data = galapagos)
+summary(modlog3)
+```
+
 **Point 10**
 

@@ -33,6 +33,10 @@ summary(lm(Species ~ Elevation + Scruz + Adjacent, data = galapagos))
 summary(lm(Species ~ Elevation + Adjacent, data = galapagos))
 ```
 
+
+Using the step-down approach, we look at the highest p-value (which must also be greater than 0.05) and remove it, and run the model again. This is done until the remaining variables are significant. In this case we first removed the variable $nearest$ followed by $area$ and finally $scruz$.
+
+
 **Point 2**
 
 
@@ -51,6 +55,10 @@ summary(lm(sqrt(Species) ~ Area + Elevation + Adjacent, data = galapagos))
 ```{r}
 summary(lm(sqrt(Species) ~ Elevation + Adjacent, data = galapagos))
 ```
+
+Using the step-down approach we first removed $nearest$ followed by $scruz$ and finally $area$.
+
+
 
 **Point 3**
 
